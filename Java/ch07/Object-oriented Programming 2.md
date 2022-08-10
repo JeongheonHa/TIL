@@ -1,5 +1,5 @@
 # 1. 상속
-### 예제 : < >
+### 예제 : [github 링크](https://github.com/JeongheonHa/Java-Archive/tree/main/Java/src)
 ## 1.1 상속
 - 두 클래스를 조상과 자손관계로 맺어주는 것.
 - 자손 클래스는 모든 멤버(변수, method)를 상속 받는다. (생성자, 초기화 블록은 제외)
