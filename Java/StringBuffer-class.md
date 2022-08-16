@@ -75,5 +75,13 @@ sb.append("123");
 - `String substring(int start) / Stirng substring(int start, int end)`   
 : 지정된 범위 내의 문자열을 String으로 뽑아서 반환
 
+## 3. StringBuffer vs StringBuilder
+- StringBuffer는 동기화가 되어있지만 StringBuilder는 동기화 x
+- 멀티쓰레드가 아닌 싱글 쓰레드의 경우 동기화는 성능을 저하시키기때문에 불필요하다.
+- 이럴때 StringBuffer 대신 StringBuilder를 사용한다. (성능 향상 !!)
+- StringBuffer를 쓰는 자리에 StringBuilder를 사용하기만 하면 된다. (동기화 기능만 추가된 것일 뿐 나머지 모두 동일 !!)
+
+> 동기화 : 멀티쓰레드에서 데이터 공유를 막는 기능   
+> StringBuffer의 성능도 충분히 좋기때문에 성능 향상이 꼭 필요한 경우를 제외하고 기존 코드르 굳이 StringBuilder로 바꿀 필요는 없다.
 # Reference
 > 자바의 정석 - 남궁성
