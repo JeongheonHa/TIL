@@ -276,7 +276,7 @@ ZonedDateTime nyTime = ZonedDateTime.now().withZoneSameInstant(myId);   // of()�
 - UTC로부터 얼마만큼 떨어져 있는지를 `ZoneOffset`으로 표현
 ```java
 // 현재 UTC로부터 얼마나 떨어져있는지 불러온다.
-ZoneOffset krOffset = ZoneDateTime.now().getOffset();
+ZoneOffset krOffset = ZonedDateTime.now().getOffset();
 // UTC로부터 떨어져있는 시간을 지정한다.
 ZoneOffset krOffset = ZoneOffset.of("+9");
 // 초 단위로 바꿔서 저장한다.
@@ -292,8 +292,8 @@ ZoneId가 아닌 `ZoneOffset`을 사용하는 것이 `OffsetDateTime`이다.
   + 같은 지역내의 컴퓨터간에 데이터를 주고받을 때는 ZoneId로도 충분하지만 서로 다른 시간대에 컴퓨터간의     
     데이터를 주고받을 때는 일관된 시간체계를 유지하는 OffsetDateTime을 사용하도록 하자 !!
 ```java
-// ZoneDateTime에서 
-ZoneDateTime zdt = ZonedDateTime.of(date, time, zid);           // ZoneId zid = ZoneId.of("Asia/Seoul");
+// ZonedDateTime에서 
+ZonedDateTime zdt = ZonedDateTime.of(date, time, zid);           // ZoneId zid = ZoneId.of("Asia/Seoul");
 // <1> OffsetDateTime에서
 OffsetDateTime odt = OffsetDateTime.of(date, time, krOffset);   // ZoneOffset krOffset = ZoneDateTime.now().getOffset();
 // <2> ZonedDateTime -> OffsetDateTime
@@ -302,7 +302,7 @@ OffsetDateTime odt = zdt.toOffsetDateTime();
 > 일광 절약시간(DST, Dayligth Saving Time) : 계절별로 시간을 더했다 뺐다하는 방식
 
 ### 10.6 ZonedDateTime의 변환
-- ZoneDateTime을 변환하는데 사용되는 메서드
+- ZonedDateTime을 변환하는데 사용되는 메서드
   + `LocalDate toLocalDate()`
   + `LocalTime toLocalTime()`
   + `LocalDateTime toLocalDateTime()`
@@ -311,13 +311,225 @@ OffsetDateTime odt = zdt.toOffsetDateTime();
   + `Instant toInstant()`
 
 - `ZonedDateTime`을 `GregorianCalendar`로 변환하는 방법
-  + GregorianCalendar와 가장 유사한 것이 ZoneDateTime이며 두 클래스간의 변환방법을 알면    
+  + GregorianCalendar와 가장 유사한 것이 ZonedDateTime이며 두 클래스간의 변환방법을 알면    
   위에 나열된 메서드를 이용해서 다른 날짜와 시간 클래스들로 변환할 수 있다.
 ```java
 // ZonedDateTime -> GregorianCalendar
 GregorianCalendar from(ZonedDateTime zdt)
 // GregorianCalendar -> ZonedDateTime
 ZonedDateTime toZonedDateTime()
+```
+
+## 11. TemporalAdjusters
+- plus(), minus()로 계산하기 복잡한 날짜계산을 도와주는 클래스
+```java
+// 예시
+LocalDate today = LocalDate.now();
+LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+```
+
+### 11.1 TemporalAdjusters의 메서드
+| 메서드 | 설명 |
+|---|---|
+| firstDayOfNextYear() | 다음 해의 첫 날 |
+| firstDayOfNextMonth() | 다음 달의 첫 날 |
+| firstDayOfYear() | 올 해의 첫 날 |
+| firstDayOfMonth() | 이번 달의 첫 날 |
+| lastDayOfYear() | 올 해의 마지막 날 |
+| lastDayOfMonth() | 이번 달의 마지막날 |
+| firstInMonth(DayOfWeek dayOfWeek) | 이번 달의 첫 번째 ?요일의 날짜 |
+| lastInMonth(DayOfWeek dayOfWeek) | 이번 달의 마지막 ?요일의 날짜 |
+| previous(DayOfWeek dayOfWeek) | 지난 ?요일의 날짜(당일 미포함) |
+| previousOrSame(DayOfWeek dayOfWeek) | 지난 ?요일의 날짜(당일 포함) |
+| next(DayOfWeek dayOfWeek) | 다음 ?요일의 날짜(당일 미포함) |
+| nextOrSame(DayOfWeek dayOfWeek) | 다음 ?요일의 날짜(당일 포함) |
+| dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) | 이번 달의 n번째 ?요일의 날짜 |
+
+## 12. Period & Duration
+- `Period` : 날짜의 차이 계산하기위한 클래스
+- `Duration` : 시간의 차이 계산하기위한 클래스
+- 두 날짜 or 시간의 차이를 구할 때는 `between()`을 사용
+```java
+// 두 날짜간의 차이 계산
+LocalDate date1 = LocalDate.of(2021,1,1);
+LocalDate date2 = LocalDate.of(2022,12,31);
+
+Preiod pe = Period.between(date, date2);
+
+// 두 시간간의 차이 계산
+LocalTime time1 = LocalTime.of(00,00,00);
+LocalTime time2 = LocalTime.of(12,34,56);
+
+Duration du = Duration.between(time1, time2);
+```
+
+- 특정 필드의 값을 얻을 때는 `get()`을 사용
+```java
+long year = pe.get(ChronoUnit.YEARS);   // int getYears()도 가능
+long month = pe.get(ChronoUnit.MONTHS); // int getMonths()도 가능
+long day = pe.get(ChronoUnit.DAYS);     // int getDays()도 가능
+
+long sec = du.get(ChronoUnit.SECONDS);  // long getSeconds도 가능
+int nano = du.get(ChronoUnit.NANOS);    // int getNano()도 가능
+```
+
+- 시간을 구하는 `getHours()`, `getMinute()`같은 메서드는 없다.
+```java
+// Preiod인스턴스의 유닛을 얻는다.
+System.out.println(pe.getUnits());  // [Years, Months, Days] <- 이것만 사용 가능
+// Duration인스턴스의 유닛을 얻는다.
+System.out.println(du.getUnits());  // [Seconds, Nanos] <- 이것만 사용 가능
+```
+
+- 시분초를 구할 때는 `Duration`을 `LocalTime`으로 변환한다.
+```java
+// LocalTime인스턴스에 00:00으로 초기화한 후 Duration인스턴스의 초 차이를 가져와 더해준다. 
+LocalTime gapTime = LocalTime.of(0,0).plusSeconds(du.getSeconds());
+// LocalTime인스턴스에 저장된 시간, 분, 초를 얻는다.
+int hour = gapTime.getHour();
+int min = gapTime.getMinute();
+int sec = gapTime.getSecond();
+// Duration인스턴스의 나노 초를 얻는다.
+int nano = du.getNano();
+```
+
+### 12.1 between() & until()
+- between()과 until()은 거의 같은 기능을 한다.
+- 단, `between()`은 `static`메서드이고, `until()`은 `인스턴스`메서드이다.
+- Period클래스는 년,월,일로 분리해서 저장하므로, D-day를 구할 때는 until()을 쓰도록 하자.
+```java
+Period pe = today.until(myBirthday);
+long dday = today.until(myBirthday, ChronoUnit.DAYS);
+```
+- LocalTime에도 until()이 있지만, Duration을 반환하는 until()은 없다.
+```java
+long sec = LocalTime.now().until.(endTime. ChronoUnit.SECONDS);
+```
+
+### 12.2 of(), ofXXX(), with(), withXXX()
+- ofXXX() : 특정 필드 지정
+  + Period : `of()`, `ofYears()`, `ofMonths()`, `ofWeeks()`, `ofDays()`
+  + Duration : `of()`, `ofDays()`, `ofHours()`, `ofMinutes()`, `ofSeconds()`
+
+- withXXX() : 특정 필드 변경
+  + Period : `with()`, `withYears()`, `withMonths()`, `withDays()`
+  + Duration : `with()`, `withSeconds()`, `withNanos()`
+
+### 12.3 사칙연산, 비교연산, 기타 메서드
+- plus(), minus()외의 곱셈과 나눗셈을하는 메서드도 존재(`multipliedBy()`, `dividedBy()`)
+```java
+// 1년을 빼고 2를 곱한다.
+pe = pe.minusYears(1).multipliedBy(2);
+// 1년을 더하고 60으로 나누다.
+du = du.plusHours(1).dividedBy(60);
+
+// Period에는 나눗셈을 위한 메서드는 존재하지 않는다 (유용하지 않기 때문에)
+```
+- `isNegative()`와 `isZero()`를 사용하면 날짜와 시간의 순서를 확인 가능
+```java
+// 날짜의 차가 0인지 확인
+boolean sameDate = Period.between(date1, date2).isZero();
+// 시간의 차가 음수인지 확인
+boolean isBefore = Duration.between(time1, time2).isNegative();
+```
+- Period에는 abs()가 없기 때문에 `negated()`를 이용해 절대값을 표현하다.
+```java
+// 시간의 차가 음수인지 확인
+if(du.isNegative())
+    // 음수일 경우, 부호를 반대로 바꿔서 저장
+    du = du.negated();
+```
+
+### 12.4 다른 단위로 변환
+- `get()`은 특정 필드의 값을 그대로 가져오지만, `toXXX()`는 해당 단위로 변환해서 반환한다.
+
+| 클래스 | 메서드 | 설명 |
+|---|---|---|
+| Period | long toTotalMonths() | 년월일을 월 단위로 변환해서 반환 (일단위는 무시) |
+| Duration | long toDays() | 일 단위로 변환해서 반환 |
+|| long toHours() | 시간 단위로 변환해서 반환 |
+|| long toMinutes() | 분 단위로 변환해서 반환 |
+|| long toMills() | 천분의 일초 단위로 변환해서 반환 |
+|| long toNanos() | 나노 초 단위로 변환해서 반환 |
+
+## 13. 파싱(parsing)과 포맷(format)
+- parsing : 날짜와 시간을 원하는 형식으로 출력하고 해석하는 방법
+- 형식화와 관련된 클래스는 java.time.format패키지에 들어있으며    
+그 중 `java.time.format.DateTimeFormatter` 클래스에 자주 쓰이는 기본적인 형식이 저장되어 있다.
+```java
+// LocalDate인스턴스에 해당 년,월,일 지정
+LocalDate date = LocalDate.of(2022,1,1);
+// LocalDate인스턴스의 년,월,일을 DateTimeFormatter클래스의 format()를 이용해 ISO_LOCAL_DATE형식으로 바꾼다
+String yyyyMMdd = DateTimeFormatter.ISO_LOCAL_DATE.format(date);  // "2022-01-01"
+// LocalDate클래스의 format()을 이용하여 ISO_LOCAL_FATE 형식으로 바꾼다.
+String yyyyMMdd = date.format(DateTimeFormatter.ISO_LOCAL_DATE);  // "2022-01-01"
+
+// format()메서드는 LocalDate나 LocalTime같은 클래스에도 존재한다.
+```
+- DateTimeFormatter에 상수로 정의된 형식
+
+| DateTimeFormatter | 보기 |
+|---|---|
+| ISO_DATE_TIME | 2011-12-03T10:15:30+01:00[Europe/Paris] |
+| ISO_LOCAL_DATE | 2011-12-03 |
+| ISO_LOCAL_TIME | 10:15:30 |
+| ISO_LOCAL_DATE_TIME | 2011-12-03T10:15:30 |
+| ISO_OFFSET_DATE | 2011-12-03+01:00 |
+| ISO_OFFSET_TIME | 10:15:30+01:00 |
+| ISO_OFFSET_DATE_TIME | 2011-12-03T10:15:30+01:00 |
+| ISO_ZONED_DATE_TIME | 2011-12-03T10:15:30+01:00[Europe/Paris]
+| ISO_INSTANT | 2011-12-03T10:15:30Z |
+| BASIC_ISO_DATE | 20111203 |
+| ISO_DATE | 2011-12-03+01:00 / 2011-12-03 |
+| ISO_TIME | 10:15:30+01:00 / 10:15:30 |
+| ISO_ORDINAL_DATE | 2012-337 |
+| ISO_WEEK_DATE | 2012-W48_6 |
+| RFC_1123_DATE_TIME | Tue, 3 Jun 2008 11:05:30 GMT |
+
+### 13.1 로케일(locale)에 종속된 형식화
+- DateTimeFormatter의 static메서드 `ofLocalizedDate()`, `ofLocalizedTime()`, `ofLocalizedDateTime()`은 로케일에 종속된 포맷터이다.
+```java
+DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+String shortFormat = formater.format(LocalDate.now());
+```
+- 열거형 FormatStyle에 정의된 상수와 출력 예
+
+| FormatStyle | 날짜 | 시간 |
+|---|---|---|
+| FULL | 2015년 11월 28일 토요일 | N/A |
+| LONG | 2015년 11월 28일 (토) | 오후 9시 15분 13초 |
+| MEDIUM | 2015.11.28 | 오후 9:15:13 |
+| SHORT | 15.11.28 | 오후 9:15 |
+
+### 13.2 출력형식 직접 정의하기
+- DateTimeFormatter의 `ofPattern()`으로 직접 정의 가능
+```java
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+```
+
+### 13.3 문자열을 날짜와 시간으로 파싱하기
+- `parse()`를 이용한다. (문자열 -> 날짜,시간)
+```java
+static LocalDateTime parse(CharSequence text)
+static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter)
+```
+
+- DateTimeFormatter에 정의된 형식을 사용할 경우
+```java
+// 기본적인 방법
+LocalDate date = LocalDate.parse("2016-01-02", DateTimeFormatter.ISO_LOCAL_DATE);
+// 자주 사용되는 형식은 생략 가능 (문자열만 인자로 받는다)
+LocalDate date = LocalDate.parse("2016-01-02"); // (1)
+LocalTime time = LocalTime.parse("23:59:59");   // (2)
+LocalDateTime DateTime = LocalDateTime.parse("2001-01-01T23:59:59");  // (3)
+```
+
+- ofPattern()으로 파싱
+```java
+// ofPattern()을 이용해 직접 정의한 형식을 pattern에 저장
+DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+// 문자열에 형식 적용
+LocalDateTime endOfYear = LocalDateTime.parse("2015-12-31 23:59:59", pattern);
 ```
 
 # Reference
