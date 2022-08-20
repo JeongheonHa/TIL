@@ -37,7 +37,7 @@
 | int hashCode() | Collection의 `hash code`를 `반환` (모든 객체에 존재) |
 
 ## 4. List인터페이스의 메서드 
-- List인터페이스는 `Vector`, `ArrayList`, `LinkedList`의 조상이다.
+- List인터페이스는 `Vector`, `ArrayList`, `LinkedList`클래스가 `구현`한다.
 
 | 메서드 | 설명 |
 |---|---|
@@ -53,7 +53,7 @@
 > ArrayList인터페이스는 Vector인터페이스를 개선한 것으로 ArrayList는 동기화가 안되어 있으나 Vector는 자체적으로 동기화 되어있다.
 
 ## 5. Set인터페이스의 메서드
-- Set인터페이스는 `HashSet`, SortedSet, `TreeSet`의 조상이며 TreeSet은 SortedSet의 자손이다.
+- Set인터페이스는 `HashSet`, SortedSet, `TreeSet`클래스가 `구현`했으며 TreeSet은 SortedSet의 `자손`이다.
 - Set인터페이스의 메서드는 Collection인터페이스의 메서드와 동일하다.
 - 집합과 관련된 메서드 (Collection에 변화가 있으면 true, 없으면 false 반환)
 
@@ -66,9 +66,9 @@
 > 이것 또한 Collection인터페이스의 메서드에 있는 것이다.
 
 ## 6. Map인터페이스의 메서드
-- Map인터페이스는 Hashtable, `HashMap`, SortedMap의 `조상`이며    
+- Map인터페이스는 Hashtable, `HashMap`, SortedMap클래스가 `구현`했으며    
   LinkedHashMap은 HashMap의 `자손`이고 `TreeMap`은 SortedMap의 `자손`이다.
-- LinkedHashMap은 순서가 없는 Map을 보완하기위한 인터페이스로 `순서`가 있다.
+- LinkedHashMap은 순서가 없는 Map을 보완하기위한 클래스로 `순서`가 있다.
 
 | 메서드 | 설명 |
 |---|---|
