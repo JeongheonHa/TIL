@@ -20,7 +20,7 @@
 - getInstance()는 시스템의 국가와 지역설정을 확인하여 Calendar클래스를 상속받아 구현된 알맞는 인스턴스를 반환한다. (우리는 GregorianCalendar)
 ```java
 Calendar cal = Calendar.getInstance();
-int thisYear = cal.get(Calendar.Year);
+int thisYear = cal.get(Calendar.YEAR);
 // 해당 월의 마지막 날 구하기
 int lastDayOfMonth = cal.getActualMaximum(Calendar.DATE);
 ```
@@ -41,7 +41,9 @@ int lastDayOfMonth = cal.getActualMaximum(Calendar.DATE);
 ## 4. set() 
 - 날짜와 시간을 지정하는 메서드
 ```java
+// 특정 필드를 해당 값으로 변경
 void set(int field, int value)
+// 년,월,일,시,분,초 원하는 값으로 변경
 void set(int year, int month, int date)
 void set(int year, int month, int date, int hourOfDay, int minute)
 void set(int year, int month, int date, int hourOfDay, int minute, int second)
@@ -110,7 +112,7 @@ date.roll(Calendar.DATE,1); // 2020/08/01
 ```java
 Calendar cal = Calendar.getInstance();
 ...
-Date d = new Date(cal.getTimeInMillis();
+Date d = new Date(cal.getTimeInMillis());
 ```
 
 - Date -> Calendar
