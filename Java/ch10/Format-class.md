@@ -5,7 +5,7 @@
 ```java
 double number = 1234567.89;
 // 다양한 형식의 DecimalFormat인스턴스 생성
-DecimalFormat df = DecimalFormat("#.#E0");
+DecimalFormat df = new DecimalFormat("#.#E0");
 // 숫자를 해당 형식에 넣고 문자열로 반환 
 String result = df.format(number);  // format() : 숫자티입 -> 문자열
 ```
@@ -19,7 +19,7 @@ Number num = df.parse("1,234,567.89");
 // 래퍼클래스를 double로 형변환
 double d = num.doubleValue();
 ```
-> Integer.parseInt("123,456.78);와 같이 parse ~ ()는 ","가 포함된 문자열을 숫자로 변환하지 못한다.   
+> Integer.parseInt("123,456.78");와 같이 parse ~ ()는 ","가 포함된 문자열을 숫자로 변환하지 못한다.   
 > 이럴 땐 DecimalFormat클래스를 사용한다.    
 
 | 기호 | 의미 | 패턴 |
