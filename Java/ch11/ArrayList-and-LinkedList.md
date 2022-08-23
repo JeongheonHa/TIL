@@ -115,7 +115,7 @@ class Node {
 | L | int lastIndexOf(Object o) | 객체가 저장된 `위치`를 `반환` (`<--`) |
 | L | ListIterator listIterator() | `ListIterator`를 `반환` |
 | L | ListIterator listIterator(int index) | 지정된 위치부터 시작하는 `ListIterator`를 `반환` |
-| L | Object remove(Object o) | 지정된 위치에 있는 `객체`를 `제거` |
+| L | Object remove(int index) | 지정된 위치에 있는 `객체`를 `제거` |
 | C | boolean remove(Object o) | 지정된 `객체`를 `제거` (true/false) |
 | C | boolean removeAll(Collection c) | 지정된 컬렉션에 저장된 것과 `동일한 객체`들을 모두 `제거` (true/false) |
 | C | boolean retainAll(Collection c) | 주어진 컬렉션의 모든 요소가 `포함`되어 있는지 `확인` (true/false) |
@@ -128,15 +128,15 @@ class Node {
 > ArrayList에서 Object clone(), void ensureCapacity(int minCapacity), void sort(Comparator c), void trimToSize() 없음   
 > ArrayList 메서드의 종류와 기능은 거의 같다.
 
-- LinkedList의 메서드 2
+- LinkedList의 메서드 2 (회색 : Queue인터페이스 구현(jdk1.5), 흰색 : Deque인터페이스 구현(jdk1.6))
 
 | 메서드 | 설명 |
 |---|---|
-| Object element() | LinkedList의 `첫 번째` 요소를 `반환` |
-| boolean offer(Object o) | 지정된 객체를 LinkedList의 `끝`에 `추가` (true/false) |
-| Object peek() | LinkedList의 `첫 번째` 요소를 `반환` |
-| Object poll() | LinkedList의 `첫 번째` 요소를 `반환`, LinkedList에서는 `제거` |
-| Object remove() | LinkedList의 `첫 번째` 요소 `제거` |
+| `Object element()` | LinkedList의 `첫 번째` 요소를 `반환` |
+| `boolean offer(Object o)` | 지정된 객체를 LinkedList의 `끝`에 `추가` (true/false) |
+| `Object peek()` | LinkedList의 `첫 번째` 요소를 `반환` |
+| `Object poll()` | LinkedList의 `첫 번째` 요소를 `반환`, LinkedList에서는 `제거` |
+| `Object remove()` | LinkedList의 `첫 번째` 요소 `제거` |
 | void addFirst(Object o) | LinkedList의 `맨 앞`에 객체(o)를 `추가` |
 | void addLast(Object o) | LinkedList의 `맨 뒤`에 객체를 `추가` |
 | Iterator descendingIterator() | 역순으로 조회하기 위한 DescendingIterator를 `반환` |
