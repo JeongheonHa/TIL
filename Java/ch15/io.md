@@ -29,7 +29,7 @@
 |---|---|
 | abstract int read() | abstract void write(int b) |
 | int read(byte[] b) | void write(byte[] b) |
-| int read(byte[] b), int off, int len() | void write(byte[] b, int off, int len) |
+| int read(byte[] b, int off, int len) | void write(byte[] b, int off, int len) |
 > read()의 반환타입이 byte가 아니라 int인 이유는 read()의 반환값의 범위가 0 ~ 255와 -1이기 때문이다.   
 > 추상메서드인 read()와 write()를 이용해서 구현한 것이기 때문에 read()와 write()가 구현되어 있지 않으면 사용할 수 없다.
 ```java
@@ -135,7 +135,7 @@ bis.read(); // 실제 입력기능은 보조스트림에 연결된 기반 스트
 | void flush() | 스트림의 버퍼에 있는 모든 내용을 출력소스에 쓴다. |
 | abstract void write(int b) | 주어진 값을 출력소스에 쓴다. |
 | void write(byte[] b) | 주어진 배열 b에 저장된 모든 내용을 출력소스에 쓴다. |
-| void srite(byte[] b, int off, int len) | 주어진 배열 b에 저장된 내용 중에서 off번째부터 len개 만큼만을 읽어서 출력소스에 쓴다. |
+| void write(byte[] b, int off, int len) | 주어진 배열 b에 저장된 내용 중에서 off번째부터 len개 만큼만을 읽어서 출력소스에 쓴다. |
 > Flush()는 버퍼가 있는 출력스트림의 경우에만 의미가 있으며 OutputStream에 정의된 flush()는 아무런 일도 하지 않는다.
 
 ### 2.2 ByteArrayInputStream & ByteArrayOutputStream
@@ -409,6 +409,350 @@ SequenceInputStream int = new SequenceInputStream(files.elements());
 - `printf()`
     + jdk1.5부터 추가
     + C언어와 사용법 동일
+
+## 4. 문자기반 스트림
+- `문자데이터`를 다루는데 사용된다는 것을 제외하고 바이트기반 스트림과 사용방법은 거의 같다.
+
+### 4.1 Reader & Writer
+- 바이트기반 스트림의 조상이 InputStream/OutputStream인 것처럼 문자기반 스트림에서는 `Reader/Writer`가 같은 역할을 한다.
+- `byte[]` -> `char[]`, `abstract` 변화
+
+- Reader의 메서드
+
+| 메서드 | 설명 |
+|---|---|
+| void close() | 스트림을 닫음으로써 사용하고 있던 자원을 반환 |
+| void mark(int readlimit) | 현재위치를 표시해 놓으며 후에 reset()에 의해서 표시해 놓은 위치로 다시 돌아갈 수 있다. </br> readlimit은 되돌아갈 수 있는 byte의 수이다. |
+| boolean markSupported() | mark()와 reset()을 지원하는지 알려준다. mark()와 reset()기능을 지원하는 것은 선택적이므로, </br> mark()와 reset()을 사용하기 전에 markSupported()를 호출해서 지원여부를 확인 |
+| int read() | 입력소스로부터 하나의 문자를 읽어온다. char의 범위인 0 ~ 65535범위의 정수를 반환, </br> 더 이상 읽어 올 데이터가 없으면 -1 반환 |
+| int read(char[] c) | 입력소스로부터 매개변수로 주어진 배열 c의 크기만큼 읽어서 </br> 배열을 채우고 읽어 온 데이터의 수 or -1 반환|
+| abstract int read(char[] c, int off, int len) | 입력소스로부터 최대 len개의 문자를 읽어서 배열 c의 지정된 위치(off)부터 저장, </br> 읽어온 데이터의 개수 or -1 반환 |
+| int read(CharBuffer target) | 입력소스로부터 읽어서 문자버퍼(target)에 저장 |
+| boolean ready() | 입력소스로부터 데이터를 읽을 준비가 되어있는지 알려준다. |
+| void reset() | 스트림에서의 위치를 마지막으로 mark()이 호출되었던 위치로 되돌린다. |
+| long skip(long n) | 현재 위치에서 주어진 문자 수(n)만큼 건너뛴다. |
+
+- Writer의 메서드
+
+| 메서드 | 설명 |
+|---|---|
+| Writer append(char c) | 지정된 문자를 출력소스에 출력 |
+| Writer append(CharSequence c) | 지정된 문자열(CharSequence)을 출력소스에 출력 |
+| Writer append(CharSequence c, int start, int end) | 지정된 문자열의 일부를 출력소스에 출력 </br> (CharBuffer, String, StringBuffer가 CharSequence 구현)
+| abstract void close() | 출력스트림을 닫음으로써 사용하고 있던 자원을 반환 |
+| abstract void flush() | 스트림의 버퍼에 있는 모든 내용을 출력소스에 쓴다. |
+| void write(int b) | 주어진 값을 출력소스에 쓴다. |
+| void write(char[] c) | 주어진 배열 c에 저장된 모든 내용을 출력소스에 쓴다. |
+| abstract void write(char[] c, int off, int len) | 주어진 배열 c에 저장된 내용 중에서 off번째부터 len개 만큼만을 읽어서 출력소스에 쓴다. |
+| void write(String str) | 주어진 문자열(str)을 출력소스에 쓴다. |
+| void write(String str, int off, int len) | 주어진 문자열의 일부(off부터 len까지)를 출력소스에 쓴다. |
+> flush()는 버퍼가 있는 출력스트림의 경우에만 의미가 있다.
+
+### 4.2 FileReader & FileWriter
+- `파일`로부터 `텍스트데이터`를 읽고 쓰는데 사용
+- FileInputStream/FileOutputStream과 사용방법이 같다.
+
+### 4.3 PipedReader & PipedWriter
+- `쓰레드` 간의 `데이터`를 주고받을 때 사용
+- 다른 스트림과는 달리 `입력과 출력스트림을 하나의 스트림으로 연결`해서 데이터를 주고받는다.
+- 스트림을 생성한 후 한쪽 쓰레드에서 `connect()`를 호출해서 입력스트림과 출력스트림을 연결
+- 입출력을 마친 후 한쪽 스트림만 닫아도 나머지 스트림은 자동으로 닫힌다.
+
+### 4.4 StringReader & StringWriter
+- CharArrayReader/CharArrayWriter와 같이 입출력 대상이 `메모리`인 스트림
+- StringWriter에 출력되는 데이터는 내부의 StringBuffer에 저장
+- StringBuffer에 저장된 데이터를 얻을 수 있는 메서드
+```java
+StringBuffer getBuffer()    // StringWriter에 출력한 데이터가 저장된 StringBuffer를 반환
+String toString()           // StringWriter에 출력된 문자열 반환 (StringBuffer에 저장된)
+```
+
+## 5. 문자기반의 보조스트림
+
+### 5.1 BufferedReader & BufferedWriter
+- `버퍼`를 이용해서 입출력의 효율을 높일 수 있도록 해주는 역할
+```java
+readLine()  // 데이터를 라인단위로 읽는다.
+newLine()   // 줄바꿈
+```
+
+### 5.2 InputStreamReader & OutputStreamWriter
+- 바이트기반 스트림을 문자기반 스트림으로 연결시켜주는 역할
+- 바이트기반 스트림의 데이터를 지정된 인코딩의 문자데이터로 변환하는 작업을 수행
+- InputStreamReader의 생성자와 메서드
+
+| 생성자/메서드 | 설명 |
+|---|---|
+| InputStreamReader(InputStream in) | OS에서 사용하는 기본 인코딩의 문자로 변환하는 InputStreamReader를 생성 |
+| InputStreamReader(InputStream in, String encoding) | 지정된 인코딩을 사용하는 InputStreamReader를 생성 |
+| String getEncoding() | InputStreamReader의 인코딩을 알려준다. |
+
+- OutputStreamWriter의 생성자와 메서드
+
+| 생성자/메서드 | 설명 |
+|---|---|
+| OutputStreamWriter(OutputStream out) | OS에서 사용하는 기본 인코딩의 문자로 변환하는 OutputStreamWriter를 생성 |
+| OutputStreamWriter(OutputStream out, String encoding) | 지정된 인코딩을 사용하는 OutputStreamWriter를 생성 | 
+| String getEncoding() | OutputStreamWriter의 인코딩을 알려준다. |
+
+## 6. 표준입출력과 File
+
+### 6.1 표준입출력
+- `콘솔`을 통한 데이터 입력과 콘솔로의 데이터 출력을 의미
+- `System.in`, `System.out`, `System.err`
+```java
+System.in   // 콘솔로부터 데이터를 입력
+System.out  // 콘솔로 데이터를 출려
+System.err  // 콘솔로 데이터를 출력
+```
+
+### 6.2 표준입출력의 대상변경
+- `콘솔이외`에 다른 입출력 대상으로 변경
+- jdk1.5부터 `Scanner클래스`가 제공되면서 System.in으로부터 데이터를 입력받아 작업하는 것이 편리
+- `setOut()`, `setErr()`, `setIn()`
+```java
+static void setOut(PrintStream out) // System.out의 출력을 지정한 PrintStream으로 변경
+static void setErr(PrintStream err) // System.err의 출력을 지정한 PrintStream으로 변경
+static void setIn(InputStream in)   // System.in의 입력을 지정한 InputStream으로 변경
+```
+- 커맨드라인에서 표준입출력 대상 바꾸는 방법
+```java
+// 지정된 파일에 내용이 있으면 내용 삭제
+java 소스파일 > 지정한 파일
+// 지정된 파일에 내용이 있으면 뒤에 덧붙인다.
+java 소스파일 >> 지정한 파일
+```
+
+### 6.3 RandomAccessFile
+- 파일의 `어느 위치`에나 읽기/쓰기가 가능하게하는 클래스
+- InputStream/OutputStream을 상속받은 것이아닌 `DataInput/DataOutput인터페이스`를 구현했기 때문에 하나의 클래스로 파일에 대한 입력과 출력을 모두 가능
+- `기본자료형` 단위로 데이터를 읽고 쓰기 가능
+> 모든 입출력에 사용되는 클래스들은 입출력 시 다음 작업이 이루어질 위치를 저장하고 있는 포인터를 내부적으로 갖고 </br> 작업자가 포인터의 위치를 마음대로 변경할 수 없지만 RandomAccessFile은 가능하다.
+
+- RandomAccessFile의 생성자와 메서드
+
+| 생성자/메서드 | 설명 |
+|---|---|
+| RandomAccessFile(File file, String mode) </br> RandomAccessFile(String fileName, String mode) | 주어진 file에 읽기 또는 쓰기를 하기 위한 RandomAccessFile인스턴스를 생성 </br> mode : </br> "r" - 파일로부터 읽기만 수행할 때 </br> "rw" - 파일에 읽기와 쓰기(지정된 파일이 없으면 새로운 파일 생성) </br> "rws","rwd" - 기본적으로 "rw"와 같으며 출력내용이 파일에 지연 없이 바로 쓰이게한다. </br> (rws - 파일의 메타정보 포함, rwd - 파일의 내용만) |
+| FileChannel getChannel() | 파일의 파일 채널을 반환 |
+| FileDescriptor getFD() | 파일의 파일 디스크립터를 반환 |
+| long getFilePointer() | 파일 포인터의 위치를 알려준다. |
+| long length() | 파일의 크기를 알려준다.(byte) |
+| void seek(long pos) | 파일 포인터의 위치를 변경, 위치 : 파일의 첫 부분부터 pos크기만큼 떨어진 곳 |
+| void setLength(long newLength) | 파일의 크기를 지정된 길이로 변경 (byte) |
+| int skipBytes(int n) | 지정된 수만큼의 byte를 건너뛴다. |
+
+### 6.4 File
+- 기본적이면서 가장 많이 사용되는 입출력 대상
+- `파일`과 `디렉토리`를 다룰 수 있게하는 클래스
+- File의 생성자와 경로와 관련된 메서드
+- `절대경로` : 파일시스템의 루트(root)로부터 시작하는 파일의 전체 경로 (하나의 파일에 둘 이상의 절대경로 존재 가능)
+- `정규경로` : 기호나 링크 등을 포함하지 않는 유일한 경로
+
+| 생성자/메서드 | 설명 |
+|---|---|
+| File(String fileName) | 주어진 문자열을 이름으로 갖는 파일을 위한 File인스턴스를 생성, 디렉토리도 같은방법으로 생성, </br> fileName은 주로 path를 포함해서 지정해주지만, 파일 이름만 사용할 경우 실행되는 위치가 path로 간주 |
+| File(String pathName, String fileName) </br> File(File pathName, String fileName) | 파일의 경로와 이름을 따로 분리해서 지정할 수 있도록 한 생성자 |
+| File(URI uri) | 지정된 uri로 파일을 생성 |
+| String getName() | 파일이름을 String으로 반환 |
+| String getPath() | 파일의 경로를 String으로 반환 |
+| String getAbsolutePath() </br> File getAbsoluteFile() | 파일의 절대경로를 String/File으로 반환 |
+| String getParent() </br> File getParentFile() | 파일의 조상 디렉토리를 String/File로 반환 |
+| String getCanonicalPath() </br> File getCanonicalFile() | 파일의 정규경로를 String/File로 반환 |
+
+- 경로와 관련된 File의 멤버변수
+
+| 멤버변수 | 설명 |
+|---|---|
+| static String pathSeparator | OS에서 사용하는 경로 구분자 (원도우 : ";", 유닉스 : ":") |
+| static char pathSeparatorChar | OS에서 사용하는 경로 구분자 (원도우 : ';', 유닉스 : ':') |
+| static String separator | OS에서 사용하는 이름 구분자 (윈도우 : "₩", 유닉스 : "/") |
+| static char separatorChar | OS에서 사용하는 이름 구분자 (윈도우 : '₩', 유닉스 : '/') |
+
+- File 인스턴스 생성하는 방법   
+: File인스턴스를 생성하는 것이지 파일이나 디렉토리가 생성되는 것은 아니다.
+```java
+File f = new File("c:\\jdk1.8\\work\\ch15", "FileEx1.java");
+File dir = new File("c:\\jdk1.8\\work\\ch15");
+File f = new File(dir, "FileEx1.java");
+```
+
+- 파일 생성
+```java
+// 이미 존재하는 파일을 참조할 때
+File f = new File("c:\\jdk1.8\\work\\ch15", "FileEx1.java");
+// 기존에 없는 파일을 새로 생성할 때
+File f = new File("c:\\jdk1.8\\work\\ch15", "FileEx1.java");
+f.createNewFile();
+```
+
+- File의 메서드
+
+| 메서드 | 설명 |
+|---|---|
+| boolean canRead() | 읽을 수 있는 파일인지 검사 |
+| boolean canWrite() | 쓸 수 있는 파일인지 검사 |
+| boolean canExecute() | 실행할 수 있는 파일인지 검사 |
+| int compareTo(File pathname) | 주어진 파일 or 디렉토리 비교 (같으면 0, 다르면 1 or -1 반환) |
+| boolean exists() | 파일이 존재하는지 검사 |
+| boolean isAbsolute() | 파일 or 디렉토리가 절대경로명으로 지정되었는지 확인 |
+| boolean isDirectory() | 디렉토리인지 확인 |
+| boolean isFile() | 파일인지 확인 |
+| boolean isHidden() | 파일의 속성이 '숨김'인지 확인 (파일이 존재하지 않으면 false) |
+| boolean createNewFile() | 아무런 내용이 없는 새로운 파일 생성 (이미 존재할 경우 생성 x) |
+| static File createTempFile(String prefix, String suffix) | 임시파일을 시스템의 임시 디렉토리에 생성 |
+| static File createTempFile(String prefix, String suffix, File directory) | 임시파일을 시스템의 지정된 디렉토리에 생성 |
+| boolean delete() | 파일을 삭제 |
+| void deleteOnExit() | 응용 프로그램 종료시 파일을 삭제 |
+| boolean equals(Object obj) | 주어진 객체(주로 File인스턴스)가 같은 파일인지 비교 |
+| long lastModified() | 파일의 마지막으로 수정된 시간을 반환 |
+| long length() | 파일의 크기 반환 |
+| String[] list() | 디렉토리의 파일목록(디렉토리 포함)을 String배열로 반환 |
+| String[] list(FilenameFilter filter) </br> File[] list(FilenameFilter filter) | FilenameFilter인스턴스에 구현된 조건에 맞는 파일을 String/File배열로 반환 |
+| File[] listFiles() </br> File[] listFiles(FileFilter filter) </br> File[] listFiles(FilenameFilter f) | 디렉토리의 파일목록(디렉토리 포함)을 File배열로 반환 </br> (filter가 지정된 경우 filter의 조건과 일치하는 파일만 반환) |
+| static File[] listRoots() </br> long getFreeSpace() </br> long getTotalSpace() </br> long getUsableSpace() | 컴퓨터의 파일시스템의 root의 목록(floppy, CD-ROM, HDD drive)을 반환 </br> (예 : A:₩, C:₩, D:₩) |
+| boolean mkdir() </br> boolean mkdirs() | 파일에 지정된 경로로 디렉토리(폴더)를 생성 mkdirs는 필요하면 부모 디렉토리까지 생성 |
+| boolean renameTo(File dest) | 지정된 파일(dest)로 이름을 변경 |
+| boolean setExecutable(boolean executable) </br> boolean setExecutable(boolean executable, boolean ownerOnly) </br> boolean setreadable(boolean readable) </br> boolean setreadable(boolean readable, boolean ownerOnly) </br> boolean setReadOnly() </br> boolean setWritable(boolean writable) </br> boolean setWritable(boolean writable, boolean ownerOnly) | 파일의 속성을 변경, OwnerOnly가 true면 파일의 소유자만 해당 속성을 변경할 수 있다. |
+| boolean setLastModified(long t) | 파일의 마지막으로 수정된 시간을 지정된 시간으로 변경 |
+| Path topath() | 파일을 Path로 변환해서 반환 |
+| URI toURI() | 파일을 URI로 변환해서 반환 |
+
+## 7. 직렬화
+- 객체를 데이터 스트림으로 만드는 것
+    + 즉, 객체에 저장된 데이터를 스트림에 쓰기(write)위해 연속적인 데이터로 변환하는 것
+- `역직렬화` : 스트림으로부터 데이터를 읽어서 객체를 만드는 것
+
+### 7.1 ObjectInputStream, ObjectOutputStream
+- `직렬화`에는 `ObjectOutputStream`을 사용, `역직렬화`에는 `ObjectInputStream` 사용
+- InputStream/OutputStream을 상속받지만 기반스트림을 필요로하는 `보조스트림`이다.
+- 객체를 생성할 때 입출력(직렬화/역직렬화)할 스트림을 지정해야한다.
+```java
+// 직렬화
+// objectfile.ser파일로 통하는 파일 출력스트림 생성
+FileOutputStream fos = new FileOutputStream("objectfile.ser");
+// 파일 출력스트림의 직렬화 보조스트림생성
+ObjectOutputStream out = new ObjectOutputStream(fos);
+// UserInfo객체를 objectfile.ser파일에 저장
+out.writeObject(new UserInfo());
+
+// 역직렬화
+// objectfile.ser파일로 통하는 파일 입력스트림 생성 (기반스트림)
+FileInputStream fis = new FileInputStream("objectfile.ser");
+// 파일 입력스트림의 역직렬화 보조스트림생성
+ObjectInputStream in = new ObjectInputStream(fis);
+// 저장된 데이터를 읽어서 저장
+UserInfo info = (UserInfo)in.readObject();
+```
+
+- objectInputStream/objectOutputStream의 메서드   
+: 직렬화/역직렬화를 `직접` 구현할 때 주로 사용
+
+| ObjectInputStream | objectOutputStream |
+|---|---|
+| void defaultReadObject() | void defaultWriteObject() |
+| int read() | void write(byte[] buf) |
+| int read(byte[] buf, int off, int len) | void write(byte[] buf, int off, int len) |
+| boolean readBoolean() | void write(int val) |
+| byte readByte() | void writeBoolean(boolean val) |
+| char readChar() | void writeByte(int val) |
+| double readDouble() | void writeBytes(String str) |
+| float readFloat() | void writeChar(int val) |
+| int readInt() | void writeChars(String str) |
+| long readLong() | void writeDouble(double val) |
+| short readShort() | void writeFloat(float val) |
+| Object readObject() | void writeInt(int val) |
+| int readUnsignedByte() | void writeLong(long val) |
+| int readUnsignedShort() | void writeObject(Object obj) |
+| Object readUnshared() | void writeShort(int val) |
+| String readUTF() | void writeUnshared(Object obj) |
+|| void writeUTF(String str) |
+> defalutReadObject() dafaultWriteObject()는 자동 직렬화를 수행
+
+- `객체를 직렬화/역직렬화하는 작업`은 객체의 모든 인스턴스변수가 참조하고 있는 모든 객체에 대한 것이기 때문에 상당히 복잡하며 `시간이 오래 걸린다.` </br> 
+: 직렬화 작업시간을 줄이고 싶으면 직렬화하고자 하는 객체의 클래스에 아래 두 개의 메서드 구현
+```java
+private void writeObject(ObjectOutputStream out) throws IOException {
+    // write메서드를 사용해서 직렬화 수행
+}
+
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // read메서드를 사용해서 역직렬화 수행
+}
+```
+
+### 7.2 직렬화가 가능한 클래스 만들기
+- `Serializable`, `transient`
+- 직렬화하고자하는 클래스가 `java.io.Serializable`인터페이스를 구현하도록하면 된다.
+```java
+// 인터페이스 정의
+public interface Serializable { } // 아무런 내용도 없는 빈 인터페이스이지만 직렬화를 고려하여 작성한 클래스인지를 판단하는 기준이 된다.
+```
+- 조상이 Serializable을 구현하면 자손 클래스가 직렬화 할 수 있다.
+```java
+public class SuperUserInfo implements Serialozable {
+    String name;
+    String password;
+}
+public class UserInfo extends SuperUserInfo {
+    int age;
+}
+// UserInfo 객체를 직렬화하면 조상 클래스의 name, password 인스턴스 변수도 직렬화 된다.
+```
+
+- Object클래스는 Serializable을 구현하고 있지 않기 때문에 Object객체는 직렬화할 수 없다.   
+: `java.io.NotSerializableException` 발생
+```java
+// 직렬화 x
+public class UserInfo implements Serializable {
+    String name;
+    String password;
+    int age;
+
+    Object obj = new Object();  // 예외발생
+}
+
+// 직렬화 가능
+public class UserInfo implements Serializable {
+    String name;
+    String password;
+    int age;
+
+    Object obj = new String("abc"); // ok, 
+    // 인스턴스변수 obj의 타입이 직렬화가 안되는 Object타입이긴 하지만 실제로 저장된 객체는 직렬화가 가능한 String인스턴스이기 때문에 직렬화 가능
+}
+```
+> `주의` : 인스턴스 변수의 타입이 아닌 `실제로 연결된 객체의 종류`에 의해서 결정된다.
+
+- `transient`제어자   
+: 직렬화 대상에서 제외
+```java
+public class IserInfo implements Serializable {
+    String name;
+    transient String password;  // 직렬화 대상에서 제외
+    int age;
+
+    transient Object obj = new Object();    // 직렬화 대상에서 제외
+}
+```
+
+### 7.3 직렬화가능한 클래스의 버전관리
+- 직렬화된 객체를 역직렬화할 때는 직렬화 했을 때와 `같은 클래스`를 사용해야한다. (다를 경우 예외 발생)
+- 객체가 직렬화될때 클래스에 정의된 멤버들의 정보를 이용해서 `serialVersionUID`라는 클래스의 버전을 `자동생성`해서 직렬화 내용에 포함된다.
+- 단, `static변수`, `상수`, `transient`가 붙은 인스턴스변수는 직렬화에 영향을 주지않는다.
+- 클래스의 버전이 바뀔 위험이 있는경우 클래스의 버전을 수동으로 관리해준다.
+    + 클래스의 내용이 바뀌어도 클래스의 버전이 자동생성된 값으로 변경되지 않는다.
+```java
+class MyData implements java.io.Serializable {
+    // 수동으로 관리
+    static final long serialVersionUTD = 35187312039121231L;
+    int value1;
+}
+```
+- serialVersionUID 알아내는 방법
+```java
+> serialver 클래스이름  // serialVersionUID가 정의되어 있으면 정의된 값 출력, 정의되어있지 않으면 자동생성한 값 출력
+```
 
 # Reference
 > 자바의 정석 - 남궁성
