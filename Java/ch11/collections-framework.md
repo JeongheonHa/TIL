@@ -90,5 +90,18 @@
 > - Collection values()에서 Collection은 list or Set 어떤 타입으로 와도 상관없기 때문에 Collection을 사용한다.     
 > - entry : key-value쌍을 entry라고 한다.
 
+### 6.1 Map.Entry인터페이스
+- Map인터페이스의 `내부 인터페이스`
+- Map인터페이스를 구현하는 클래스에서는 Map.Entry인터페이스도 같이 구현 해야한다.
+- Map.Entry인터페이스의 메서드
+
+| 메서드 | 설명 |
+|---|---|
+| boolean equals(Object o) | 동일한 Entry인지 비교 |
+| Object getKey() | Entry의 key객체를 반환 |
+| Object getValue() | Entry의 value객체를 반환 |
+| int hashCode() | Entry의 해시코드를 반환 |
+| Object setValue(Object value) | Entry의 value객체를 지정된 객체로 바꾼다. |
+
 # Reference
 > 자바의 정석 - 남궁성
