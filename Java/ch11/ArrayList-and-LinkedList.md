@@ -6,13 +6,14 @@
 - `ArrayList`는 기존의 `Vector`를 개선한 것으로 구현원리와 기능은 동일 (ArrayList를 사용하도록 하자 !)
 - Vector는 자체적으로 동기화 처리가 되어 있으나, ArrayList는 동기화 처리가 되어있지 않다.
 - 데이터의 저장공간으로 `배열`을 사용한다.
+- 배열에 더 이상 저장할 공간이 없으면 보다 큰 새로운 배열을 생성해서 기존의 배열에 저장된 내용을 새로운 배열에 `복사`한 다음에 저장된다.
 
 ```java
-public class Vector extends AbstractList implements List, RandomAccess, Cloneable, java.io.Serializable {
+public class ArrayList extends AbstractList implements List, RandomAccess, Cloneable, java.io.Serializable {
     ...
     // 객체를 담기위한 배열
-    protected Object[] elementData; 
-    
+    transient Object[] elementData; 
+    ...
     // 선언된 객체의 타입이 모든 객체의 최고 조상인 `Object[]`이므로 모든 종류의 객체를 담을 수 있다.
 }
 ```
@@ -28,35 +29,34 @@ public class Vector extends AbstractList implements List, RandomAccess, Cloneabl
 
 - 메서드
 
-| 인터페이스 | 매서드 | 설명 |
-|---|---|---|
-| C | boolean add(Object o) | ArrayList의 마지막에 객체를 `추가` (성공하면 true, 실패하면 false) |
-| L | void add(int index, Object element) | 지정된 위치에 `객체`(element)를 `저장` |
-| C | boolean addAll(Collection c) | 주어진 컬렉션의 `모든 객체`를 `저장` (true/false) |
-| L | boolean addAll(int index, Collection c) | 지정된 위치부터 주어진 컬렉션의 `모든 객체`를` 저장` (true/false) |
-| C | void clear() | ArrayList를 완전히 `비운다`. | 
-|| Object clone() | ArrayList를 `복제` |
-| C | boolean contains(Object o) | 지정된 객체(o)가 ArrayList에 포함되어 있는지 `확인` (true/false) |
-|| void ensureCapacity(int minCapacity) | ArrayList의 `용량`이 최소한 minCapacity가 되도록 한다. |
-| L | Object get(int index) | 지정된 위치에 저장된 `객체`를 `반환` |
-| L | int indexOf(Object o) | 지정된 객체가 저장된 `위치`를 찾아 `반환` (`-->`) |
-| C | boolean isEmpty() | ArrayList가 비어있는지 `확인` (true/false) |
-| C | Iterator iterator() | ArrayList의 `Iterator객체`를 `반환` |
-| L | int lastIndexOf(Object o) | 객체가 저장된 `위치`를 `반환` (`<--`) |
-| L | ListIterator listIterator() | ArrayList의 `ListIterator`를 `반환` |
-| L | ListIterator listIterator(int index) | ArrayList의 지정된 위치부터 시작하는 `ListIterator`를 `반환` |
-| L | Object remove(Object o) | 지정된 위치에 있는 `객체`를 `제거` |
-| C | boolean remove(Object o) | 지정된 `객체`를 `제거` (true/false) |
-| C | boolean removeAll(Collection c) | 지정된 컬렉션에 저장된 것과 `동일한 객체`들을 ArrayList에서 `제거` (true/false) |
-| C | boolean retainAll(Collection c) | ArrayList에 저장된 객체 중에서 주어진 컬렉션과 `공통된 것들만을 남기고` </br> 나머지는 `삭제` (true/false) |
-| L | Object set(int index, Object element) | 주어진 `객체`(element)를 지정된 위치에 `저장`하여 바꿈 |
-| C | int size() | ArrayList에 저장된 `객체의 개수`를 `반환` |
-| L | void sort(Comparator c) | 지정된 정렬기준(c)으로 ArrayList를 `정렬` |
-| L | List subList(int fromIndex, int toIndex) | fromIndex부터 toIndex사이에 저장된 `객체`를 `반환` |
-| C | Object[] toArray() | ArrayList에 저장된 모든 객체들을 `객체배열`로 `반환` |
-| C | Objet[] toArray(Object[] a) | ArrayList에 저장된 모든 객체들을 `객체배열` a에 담아 `반환` |
-|| void trimToSize() | 용량을 크기에 맞게 줄인다 (`빈공간을 없앤다.`) |
-> C : collection인터페이스, L : List인터페이스
+| 매서드 | 설명 |
+|---|---|
+| boolean add(Object o) | ArrayList의 마지막에 객체를 `추가` |
+| boolean addAll(Collection c) | 주어진 컬렉션의 `모든 객체`를 `저장` |
+| boolean remove(Object o) | 지정된 `객체`를 `제거` (true/false) |
+| boolean removeAll(Collection c) | 지정된 컬렉션에 저장된 것과 `동일한 객체`들을 ArrayList에서 `제거` |
+| boolean retainAll(Collection c) | ArrayList에 저장된 객체 중에서 주어진 컬렉션과 `공통된 것들만을 남기고` </br> 나머지는 `삭제` |
+| boolean contains(Object o) | 지정된 객체(o)가 ArrayList에 포함되어 있는지 `확인` |
+| void clear() | ArrayList를 완전히 `비운다`. |
+| boolean isEmpty() | ArrayList가 비어있는지 `확인` |
+| int size() | ArrayList에 저장된 `객체의 개수`를 `반환` |
+| Iterator iterator() | ArrayList의 `Iterator객체`를 `반환` |
+| Object[] toArray() | ArrayList에 저장된 모든 객체들을 `객체배열`로 `반환` |
+| Objet[] toArray(Object[] a) | ArrayList에 저장된 모든 객체들을 `객체배열` a에 담아 `반환` |
+| void add(int index, Object element) | 지정된 위치에 `객체`(element)를 `저장` |
+| boolean addAll(int index, Collection c) | 지정된 위치부터 주어진 컬렉션의 `모든 객체`를` 저장` |
+| Object get(int index) | 지정된 위치에 저장된 `객체`를 `반환` |
+| Object remove(int index) | 지정된 위치에 있는 `객체`를 `제거` |
+| Object set(int index, Object element) | 주어진 `객체`(element)를 지정된 위치에 `저장`하여 바꿈 |
+| int indexOf(Object o) | 지정된 객체가 저장된 `위치`를 찾아 `반환` (`-->`) |
+| int lastIndexOf(Object o) | 객체가 저장된 `위치`를 `반환` (`<--`) |
+| ListIterator listIterator() | ArrayList의 `ListIterator`를 `반환` |
+| ListIterator listIterator(int index) | ArrayList의 지정된 위치부터 시작하는 `ListIterator`를 `반환` |
+| void sort(Comparator c) | 지정된 정렬기준(c)으로 ArrayList를 `정렬` |
+| List subList(int fromIndex, int toIndex) | fromIndex부터 toIndex사이에 저장된 `객체`를 `반환` |
+| Object clone() | ArrayList를 `복제` |
+| void ensureCapacity(int minCapacity) | ArrayList의 `용량`이 최소한 minCapacity가 되도록 한다. |
+| void trimToSize() | 용량을 크기에 맞게 줄인다 (`빈공간을 없앤다.`) |
 
 ### 1.2 ArrayList에 저장된 객체의 삭제과정
 - ArrayList에 중간에 저장된 데이터를 제거할 경우
@@ -65,6 +65,7 @@ public class Vector extends AbstractList implements List, RandomAccess, Cloneabl
     + 데이터가 삭제되어 데이터의 개수가 줄었으므로 size의 값을 감소시킨다. (3)   
 > - 마지막 데이터를 삭제할 경우 1번 과정은 필요없다.   
 > - 중간에 저장된 데이터를 제거하면 배열 복사가 발생하여 부담이 많이 되며 되도록 1번 과정이 발생하지 않도록 하자 !!
+
 ### 1.3 ArrayList의 장단점
 - 장점 
     + 배열은 `구조`가 `간단`하고 데이터를 읽는 시간(`접근시간`)이 `짧다`.   
@@ -100,40 +101,39 @@ class Node {
 
 - LinkedList의 메서드 1 (collection, List인터페이스를 구현)
 
-| 인터페이스 | 매서드 | 설명 |
-|---|---|---|
-| C | boolean add(Object o) | LinkedList의 마지막에 객체를 `추가` (성공하면 true, 실패하면 false) |
-| L | void add(int index, Object element) | 지정된 위치에 `객체`(element)를 `저장` |
-| C | boolean addAll(Collection c) | 주어진 컬렉션의 `모든 객체`를 LinkedList 끝에 `저장` (true/false) |
-| L | boolean addAll(int index, Collection c) | 지정된 위치부터 주어진 컬렉션의 `모든 객체`를` 저장` (true/false) |
-| C | void clear() | LinkedList를 완전히 `비운다`. | 
-| C | boolean contains(Object o) | 지정된 객체(o)가 LinkedList에 포함되어 있는지 `확인` (true/false) |
-| L | Object get(int index) | 지정된 위치에 저장된 `객체`를 `반환` |
-| L | int indexOf(Object o) | 지정된 객체가 저장된 `위치`를 찾아 `반환` (`-->`) |
-| C | boolean isEmpty() | LinkedList가 비어있는지 `확인` (true/false) |
-| C | Iterator iterator() | `Iterator`를 `반환` |
-| L | int lastIndexOf(Object o) | 객체가 저장된 `위치`를 `반환` (`<--`) |
-| L | ListIterator listIterator() | `ListIterator`를 `반환` |
-| L | ListIterator listIterator(int index) | 지정된 위치부터 시작하는 `ListIterator`를 `반환` |
-| L | Object remove(int index) | 지정된 위치에 있는 `객체`를 `제거` |
-| C | boolean remove(Object o) | 지정된 `객체`를 `제거` (true/false) |
-| C | boolean removeAll(Collection c) | 지정된 컬렉션에 저장된 것과 `동일한 객체`들을 모두 `제거` (true/false) |
-| C | boolean retainAll(Collection c) | 주어진 컬렉션의 모든 요소가 `포함`되어 있는지 `확인` (true/false) |
-| L | Object set(int index, Object element) | 주어진 `객체`(element)를 지정된 위치에 `저장`하여 바꿈 |
-| C | int size() | LinkedList에 저장된 `객체의 개수`를 `반환` |
-| L | List subList(int fromIndex, int toIndex) | fromIndex부터 toIndex사이에 저장된 `객체`를 List로 `반환` |
-| C | Object[] toArray() | LinkedList에 저장된 모든 객체들을 `객체배열`로 `반환` |
-| C | Objet[] toArray(Object[] a) | LinkedList에 저장된 모든 객체들을 `객체배열` a에 담아 `반환` |
-> C : collection인터페이스, L : List인터페이스   
-> ArrayList에서 Object clone(), void ensureCapacity(int minCapacity), void sort(Comparator c), void trimToSize() 없음   
+| 매서드 | 설명 |
+|---|---|
+| boolean add(Object o) | LinkedList의 마지막에 객체를 `추가` |
+| boolean addAll(Collection c) | 주어진 컬렉션의 `모든 객체`를 LinkedList 끝에 `저장` |
+| boolean remove(Object o) | 지정된 `객체`를 `제거` |
+| boolean removeAll(Collection c) | 지정된 컬렉션에 저장된 것과 `동일한 객체`들을 모두 `제거` |
+| boolean retainAll(Collection c) | LinkedList에 저장된 객체 중 공통된 것만 남기고 모두 `제거` |
+| boolean contains(Object o) | 지정된 객체(o)가 LinkedList에 포함되어 있는지 `확인` |
+| boolean containsAll(Collection c) | 지정된 컬렉션의 모든 요소가 포함되어 있는지 `확인` |
+| void clear() | LinkedList를 완전히 `비운다`. |
+| boolean isEmpty() | LinkedList가 비어있는지 `확인` |
+| Iterator iterator() | `Iterator`를 `반환` |
+| int size() | LinkedList에 저장된 `객체의 개수`를 `반환` |
+| Object[] toArray() | LinkedList에 저장된 모든 객체들을 `객체배열`로 `반환` |
+| Objet[] toArray(Object[] a) | LinkedList에 저장된 모든 객체들을 `객체배열` a에 담아 `반환` | 
+| void add(int index, Object element) | 지정된 위치에 `객체`(element)를 `저장` |
+| boolean addAll(int index, Collection c) | 지정된 위치부터 주어진 컬렉션의 `모든 객체`를` 저장` |
+| Object get(int index) | 지정된 위치에 저장된 `객체`를 `반환` |
+| Object remove(Object o) | 지정된 위치에 있는 `객체`를 `제거` |
+| Object set(int index, Object element) | 주어진 `객체`(element)를 지정된 위치에 `저장`하여 바꿈 |
+| int indexOf(Object o) | 지정된 객체가 저장된 `위치`를 찾아 `반환` (`-->`) |
+| int lastIndexOf(Object o) | 객체가 저장된 `위치`를 `반환` (`<--`) |
+| ListIterator listIterator() | `ListIterator`를 `반환` |
+| ListIterator listIterator(int index) | 지정된 위치부터 시작하는 `ListIterator`를 `반환` |
+| List subList(int fromIndex, int toIndex) | fromIndex부터 toIndex사이에 저장된 `객체`를 List로 `반환` |  
 > ArrayList 메서드의 종류와 기능은 거의 같다.
 
-- LinkedList의 메서드 2 (회색 : Queue인터페이스 구현(jdk1.5), 흰색 : Deque인터페이스 구현(jdk1.6))
+- LinkedList의 메서드 2(회색 : Queue인터페이스 구현(jdk1.5), 흰색 : Deque인터페이스 구현(jdk1.6))
 
 | 메서드 | 설명 |
 |---|---|
 | `Object element()` | LinkedList의 `첫 번째` 요소를 `반환` |
-| `boolean offer(Object o)` | 지정된 객체를 LinkedList의 `끝`에 `추가` (true/false) |
+| `boolean offer(Object o)` | 지정된 객체를 LinkedList의 `끝`에 `추가` |
 | `Object peek()` | LinkedList의 `첫 번째` 요소를 `반환` |
 | `Object poll()` | LinkedList의 `첫 번째` 요소를 `반환`, LinkedList에서는 `제거` |
 | `Object remove()` | LinkedList의 `첫 번째` 요소 `제거` |
@@ -142,8 +142,8 @@ class Node {
 | Iterator descendingIterator() | 역순으로 조회하기 위한 DescendingIterator를 `반환` |
 | Object getFirst() | LinkedList의 `첫 번째` 요소를 `반환` |
 | Object getLast() | LinkedList의 `마지막` 요소를 `반환` |
-| boolean offerFirst(Object o) | LinkedList의 `맨 앞`에 객체를 `추가` 성공하면 true, 실패하면 false |
-| boolean offerLast(Object o) | LinkedLust의 `맨 뒤`에 객체를 `추가` (true/false) |
+| boolean offerFirst(Object o) | LinkedList의 `맨 앞`에 객체를 `추가` |
+| boolean offerLast(Object o) | LinkedLust의 `맨 뒤`에 객체를 `추가` |
 | Object peekFirst() | LinkedList의 `첫 번째` 요소를 `반환` |
 | Object peekLast() | LinkedList의 `마지막` 요소를 `반환` |
 | Object pollFirst() | LinkedList의 `첫 번째` 요소를 `반환`하면서 `제거` |
@@ -186,7 +186,7 @@ class Node {
 ## 3. ArrayList vs LinkedList
 | 컬렉션 | 접근시간(읽기) | 추가/삭제 | 비고 |
 |---|---|---|---|
-| ArrayList | 빠르다 | 느리다 | 순차적인 추가삭제는 빠름 </br> 비효율적인 메모리 사용 |
+| ArrayList | 빠르다 | 느리다 | 순차적인 추가/삭제는 빠름 </br> 비효율적인 메모리 사용 |
 | LinkedList | 느리다 | 빠르다 | 데이터가 많을수록 접근성이 떨어짐 |
 
 # Reference
