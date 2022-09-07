@@ -1,17 +1,18 @@
 # Arrays & Comparator & Comparable
 
 ## 1. Arrays
-- 배열을 다루기 편리한 매서드 제공 (모두 `static` 메서드)
+- 배열을 다루기 편리한 메서드 제공 (모두 `static` 메서드)
 
 ### 1.1 1차원 배열의 비교와 출력
-- `equals()` : 두 배열에 저장된 모든 요소를 비교 (true / false)
-- `toString()` : 베열의 모든 요소를 문자열로 출력 (1차원만 가능)
+- `equals()` : 두 배열에 저장된 모든 요소를 비교 (true/false)
+- `toString()` : 배열의 모든 요소를 문자열로 출력 (1차원만 가능)
 
 ```java
-// equals()
+// equals(), toString()
 String[] arr = {"aaa", "bbb"};
 String[] arr2 = {"aaa", "bbb"};
 System.out.println(Arrays.equals(arr, arr2))    // true
+System.out.println(Arrays.toString(arr))    // [aaa, bbb]
 
 // toString() 정의
 static String toString(boolean[] a)
@@ -49,7 +50,7 @@ System.ou.println(Arrays.deepToString(arr2D));
 // copyOf()
 int[] arr = {0,1,2,3,4};
 int[] arr2 = Arrays.copyOf(arr, arr.length);    // [0,1,2,3,4]
-int[] arr3 = Arrays.copyOf(arr. 3);             // [0,1,2]
+int[] arr3 = Arrays.copyOf(arr, 3);             // [0,1,2]
 int[] arr4 = Arrays.copyOf(arr, 7);             // [0,1,2,3,4,0,0]
 // copyOfRange()
 int[] arr5 = Arrays.copyOfRange(arr,2,4);       // [2,3]
@@ -87,7 +88,7 @@ int idx = Arrays.binarySearch(arr,2);       // 2
 ### 1.6 배열을 List로 변환
 - `asList(Object... a)` : 배열을 List에 담아서 반환
     + 매개변수 타입이 `가변인수`라서 배열 생성없이 저장할 요소들만 나열하는 것도 가능
-    + `주의` : asList()가 반환한 List는 읽기 전용이기 때문에 List의 크기는 변경할 수 없다. (추가/삭제 x, 저장된 내용 변경 o)
+    + `주의` : asList()가 반환한 List는 읽기 전용이기 때문에 List의 크기는 변경할 수 없다. (`추가/삭제` x, 저장된 내용 `변경` o)
 
 ```java
 // asList(Object... a)
@@ -108,13 +109,14 @@ List list = new ArrayList(Arrays.asList(1,2,3,4,5));    // 새로운 ArrayList �
 
 ```java
 // 정의
+public interface Comparable {
+    public int compareTo(Object o); // 주어진 객체(o)를 자신(this)와 비교 (음수,0,양수)
+}
+
 public interface Comparator {
     int compare(Object o1, Object o2);  // o1, o2 두 객체 비교 (왼쪽이 작다 : 음수, 같다 : 0, 왼쪽이 크다 : 양수)
     // Comparator를 구현하는 클래스는 equals를 오버라이딩해야할 수 도 있다는 것을 알리기위해 정의
     boolean equals(Object obj);
-}
-public interface Comparable {
-    public int compareTo(Object o); // 주어진 객체(o)를 자신(this)와 비교 (음수,0,양수)
 }
 ```
 
@@ -135,7 +137,7 @@ static void sort(Object[] a, Comparator c)
 // 정렬 대상과 정렬 기준을 매개변수로 받는다.
 static void sort(int[] intArr) {    // int타입이 Comparable을 구현하기 때문에 정렬 기준 없이 대상만 매개변수로 받는다.
     for(int i = 0; i < intArr.length-1;i++) {
-        for(int j = 0; i < intArr.length-1-i; j++) {
+        for(int j = 0; j < intArr.length-1-i; j++) {
             int tmp = 0;
             // 정렬 기준을 정한다.
             if(int Arr[j] > intArr[j+1]) {  // 이 부분만 바뀔 뿐 전체적인 정렬 방식은 변하지 않는다.
@@ -163,8 +165,8 @@ public final class Integer extends Number implements Comparable {
     }
 }
 ```
-> `주의` : 음수나 양수이면 되기 때문에  꼭 -1,1이 아니더라도 뺄셈(-)을 이용하여 두 객체의 차이가 -231312이거나 231231여도 비교가 가능하다.   
-> 하지만, compareTo()메서드는 int형을 반환하기 때문에 값이 int형의 최대값을 초과한다면 `overflow`와 `underflow`의 위험성이 있어   
+> `주의` : 음수나 양수이면 되기 때문에  꼭 -1,1이 아니더라도 뺄셈(-)을 이용하여 두 객체의 차이가 -231312이가나 231231도 비교가 가능하다.   
+> 하지만, compareTo()메서드는 int형을 반환하기 때문에 값이 int형의 최대값을 초과한다면 overflow와 underflow의 위험성이 있어   
 > 비교 연산자를 사용하는 것이 안전하다.
 
 ### 2.3 정렬 직접 구현
@@ -185,4 +187,4 @@ class Descending implements Comparator {
 }
 ```
 # Reference
-> 자바의 정석 - 남궁성
+> 자바의 정석 -남궁성
