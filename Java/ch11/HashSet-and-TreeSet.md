@@ -22,14 +22,14 @@
 | 메서드 | 설명 |
 |---|---|
 | boolean add(Object o) </br> boolean addAll(Collection c) | 주어진 객체(o) 또는 Collection(c)의 객체들을 `추가` <br> 이미 저장되어 있는 요소와 중복된 요소를 추가할 경우 false 반환 |
-| void clear() | 저장된 `모든 객체`를 `삭제` |
-| boolean contains(Object o)</br> boolean containsAll(Collection c) | 주어진 객체(o) 또는 Collection(c)의 객체들이 포함되어 있는지 `확인` |
-| boolean isEmpty() | HashSet이 비어있는지 `확인` |
-| Iterator iterator() | Iterator를 `반환` |
 | boolean remove(Object o) | 주어진 객체를 HashSet에서 `삭제` |
 | boolean removeAll(Collection c) | 주어진 Collection에 포함된 객체들을 HashSet에서 `삭제` |
 | boolean retainAll(Collection c) | 주어진 Collection에 포함된 객체만을 남기고 다른 객체들은 `삭제` 후 </br> 이 작업이 변화가 있으먼 `true` 변화가 없으면 `false` |
+| boolean contains(Object o)</br> boolean containsAll(Collection c) | 주어진 객체(o) 또는 Collection(c)의 객체들이 포함되어 있는지 `확인` |
+| void clear() | 저장된 `모든 객체`를 `삭제` |
+| boolean isEmpty() | HashSet이 비어있는지 `확인` |
 | int size() | 저장된 `객체의 개수`를 `반환` |
+| Iterator iterator() | Iterator를 `반환` |
 | Object[] toArray() | 저장된 객체를 `객체배열`로 `반환` |
 | Object[] toArray(Object[] a) | 저장된 객체들을 주어진 `객체배열`(a)에 담아서 `반환` |
 | Object clone() | HashSet을 `복제`해서 `반환`(얕은 복사) |
@@ -74,7 +74,7 @@ class Person {
     // hashCode()오버라이딩
     public int hashCode() {
         // 자신의 인스턴스변수의 hashCode를 반환
-        return Objects.hashCode(name,age);  // int hashCode(Object... values)
+        return Objects.hash(name,age);  // int hashCode(Object... values)
     }
 }
 ```
@@ -88,7 +88,7 @@ class Person {
 
 ## 2. TreeSet
 - `이진 탐색 트리`라는 데이터의 형태로 데이터를 저장하는 `컬렉션클래스`
-- `정렬`, `범위검색`에 유리하다.
+- `정렬`, `검색`, `범위검색`에 유리하다.
 - TreeSet은 이진 탐색 트리의 성능을 향상시킨 `레드-블랙 트리`로 구현되어 있다.
 
 ### 2.1 이진 트리
@@ -127,13 +127,13 @@ class TreeNode {
 | 메서드 | 설명 |
 |---|---|
 | boolean add(Object o) </br> boolean addAll(Collection c) | 주어진 객체(o) 또는 Collection(c)의 객체들을 `추가` <br> `이미 저장되어 있는 요소와 중복된 요소를 추가할 경우 false 반환` |
-| void clear() | 저장된 `모든 객체` `삭제` |
-| boolean contains(Object o) </br> boolean containsAll(Collection c) | 지정된 객체(o) 또는 Collection의 객체들이 포함되어 있는지 `확인` |
-| boolean isEmpty() | TreeSet이 비어있는지 `확인` |
-| Iterator iterator() | TreeSet의 iterator를 `반환` |
 | boolean remove(Object o) | 지정된 객체 `삭제` |
-| boolean retinAll(Collection c) | 주어진 컬렉션과 공통된 요소만을 남기고 `삭제` |
+| boolean retainAll(Collection c) | 주어진 컬렉션과 공통된 요소만을 남기고 `삭제` |
+| boolean contains(Object o) </br> boolean containsAll(Collection c) | 지정된 객체(o) 또는 Collection의 객체들이 포함되어 있는지 `확인` |
+| void clear() | 저장된 `모든 객체` `삭제` |
+| boolean isEmpty() | TreeSet이 비어있는지 `확인` |
 | int size() | 저장된 객체의 `개수` `반환` |
+| Iterator iterator() | TreeSet의 iterator를 `반환` |
 | Object[] toArray() | 저장된 객체를 `객체배열`로 `반환` |
 | Object[] toArray(Object[] a) | 저장된 객체를 주어진 `객체배열`에 저장하여 `반환 `|
 
@@ -141,23 +141,24 @@ class TreeNode {
 
 | 메서드 | 설명 |
 |---|---|
-| Object ceiling(Object o) | 지정된 객체와 `같은 객체`를 `반환`, 없으면 `큰 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환` (없으면 null) |
-| Object clone() | TreeSet을 `복제`하여 `반환` |
+| Object ceiling(Object o) | 지정된 객체와 `같은 객체`를 `반환`, 없으면 `큰 값`을 가진 객체 중 제일 `가까운 값`의 객체를 </br> `반환` (없으면 null) |
+| Object floor(Object o) | 지정된 객체와 `같은 객체`를 `반환`, 없으면 `작은 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환` (없으면 null) |
+| Object higher(Object o) | 지정된 객체보다 `큰 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환`, (없으면 null) |
+| Object lower(Object o) | 지정된 객체보다 `작은 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환`, (없으면 null) |
+| Object first() | 정렬된 순서에서 `첫 번째 객체`를 `반환` |
+| Object last() | 정렬된 순서에서 `마지막 객체`를 `반환` |
+| Object pollFirst() | TreeSet의 `첫 번째 요소`(제일 작은 값의 객체)를 `반환` |
+| Object pollLast() | TreeSet의 `마지막 요소`(제일 큰 값의 객체)를 `반환` |
+| SortedSet headSet(Object toElement) | 지정된 객체보다 `작은 값`의 객체들을 `반환` |
+| SortedSet subSet(Object fromElement, Object toElement) | 범위 검색의 결과 `반환` (마지막 미포함) |
+| SortedSet tailSet(Object fromElement) | 지정된 객체보다 `큰 값`의 객체들을 `반환` |
+| NavigableSet headSet(Object toElement, boolean inclusive) | 지정된 객체보다 `작은 값`의 객체들을 `반환` </br> inclusive가 true이면, 같은 값의 객체도 포함 |
+| NavigableSet`<E>` subSet(`E` fromElement, boolean fromInclusive, </br> E toElement, boolean toInclusive) | 범위 검색의 결과 `반환` </br> (fromInclusive가 true면 시작 값 포함, toInclusive가 true면 마지막 값 포함) |
 | Comparator comparator() | TreeSet의 `정렬기준`을 `반환` |
 | NavigableSet descendingSet() | TreeSet에 저장된 요소들을 `역순`으로 `정렬`해서 `반환` |
-| Object first() | 정렬된 순서에서 `첫 번째 객체`를 `반환` |
-| Object floor(Object o) | 지정된 객체와 `같은 객체`를 `반환`, 없으면 `작은 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환` (없으면 null) |
-| SortedSet headSet(Object toElement) | 지정된 객체보다 `작은 값`의 객체들을 `반환` |
-| NavigableSet headSet(Object toElement, boolean inclusive) | 지정된 객체보다 `작은 값`의 객체들을 `반환` </br> inclusive가 true이면, 같은 값의 객체도 포함 |
-| Object higher(Object o) | 지정된 객체보다 `큰 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환`, (없으면 null)
-| Object last() | 정렬된 순서에서 `마지막 객체`를 `반환` |
-| Object lower(Object o) | 지정된 객체보다 `작은 값`을 가진 객체 중 제일 `가까운 값`의 객체를 `반환`, (없으면 null) |
-| Object pollFirst() | TreeSet의 `첫 번째 요소`(제일 작은 값의 객체)를 `반환` |
-| Object polllast() | TreeSet의 `마지막 요소`(제일 큰 값의 객체)를 `반환` |
 | Spliterator spliterator() | TreeSet의 spliterator `반환` |
-| SortedSet subSet(Object fromElement, Object toElement) | 범위 검색의 결과 `반환` (마지막 미포함) |
-| NavigableSet<E> subSet(E fromElement, boolean fromInclusive, </br> E toElement, boolean toInclusive) | 범위 검색의 결과 `반환` </br> (fromInclusive가 true면 시작 값 포함, toInclusive가 true면 마지막 값 포함) |
-| SortedSet tailSet(Object fromElement) | 지정된 객체보다 `큰 값`의 객체들을 `반환` |
+| Object clone() | TreeSet을 `복제`하여 `반환` |
+
 
 ### 2.4 TreeSet vs HashSet
 - TreeSet은 정렬을 해주지 않아도 정렬이되고 HashSet은 정렬을 해주지 않으면 정렬이 되지 않는다.
@@ -208,7 +209,7 @@ class TestComp implements Comparator {
 ### 2.5 트리순회
 - 이진 트리의 모든 노드를 한번씩 읽는 것을 트리 순회하고 한다.
 - `전위순회`(preorder) : 부모를 먼저 읽고 자식을 읽는 방식
-- `후의순회`(postorder) : 자식을 먼저 읽고 부모를 읽는 방식
+- `후위순회`(postorder) : 자식을 먼저 읽고 부모를 읽는 방식
 - `중위순회`(inorder) : 자식-부모-자식 순으로 읽는 방식 (오름차순 정렬)
 - `레벨순회`(levelorder) : 위에서부터 순서대로 읽는 방식
 
