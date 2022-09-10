@@ -197,6 +197,7 @@ System.out.println(Juicer.makeJuice(new FruitBox<Apple>()));    // ok, Apple이 
 ## 9. 지네릭 메서드
 - 지네릭 타입이 선언된 메서드(타입 변수는 메서드 내에서만 유효)
 - 클래스의 타입 매개변수 <T>와 메서드의 타입 매개변수 <T>는 별개
+- 반환타입 앞에 선언
 ```java
 class FruitBox<T> {
     ...
@@ -280,12 +281,24 @@ class Ex {
         // FruitBox<Apple> -> FruitBox<? extends Fruit> 
         FruitBox<? extends Fruit> abox = new FruitBox<Apple>(); // 가능
         // FruitBox<? extends Fruit> -> FruitBox<Apple> 
-        FruitBox<Apple> appleBox = (FruitBox<Apple>)abox;   // 형변환 생략할 경우 error, 생략 안해주면 된다.
+        FruitBox<Apple> appleBox = (FruitBox<Apple>)abox;   // 가능, 미확인 타입으로 형변환 경고 발생
     }
 }
 class FruitBox<T extends Fruit & Eatable> extends Box<T> {}
 class Box<T> { }
 ```
+
+- `<? extends Object>`를 줄여서 `<?>`로 쓸 수 있다.
+```java
+Optional<?> EMPTY = new Optional<?>();      // error, new연산자는 컴파일 단계에서 타입을 확정해야한다.
+Optional<?> EMPTY = new Optional<Object>(); // ok
+Optional<?> EMPTY = new Optional<>();       // ok
+
+// <?>
+class Box<T extends Fruit> {}
+Box<?> b= new Box<>;    // Box<?> b = new Box<Fruit>;이다.
+```
+
 
 ## 12. 지네릭 타입의 제거
 - 이전 버전과의 `하위 호환성`과 `안정성` 때문에 지네릭 타입은 `컴파일 타임에만 존재`하고 컴파일 후에는 적절한 타입으로 바뀐다.
