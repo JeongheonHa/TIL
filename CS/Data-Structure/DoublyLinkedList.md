@@ -88,22 +88,22 @@ def splice(self, a, b, x):
 ## ✅ 이동과 삽입
 
 ```python
-def moveAfter(a, x):        # x 뒤로 a 이동
+def moveAfter(self, a, x):        # x 뒤로 a 이동
     splice(a, a, x)
     
-def moveBefore(a, x):       # x 앞으로 a 이동
+def moveBefore(self, a, x):       # x 앞으로 a 이동
     splice(a, a, x.prev)
     
-def insertAfter(x, key):    # x 뒤에 key 삽입
+def insertAfter(self, x, key):    # x 뒤에 key 삽입
     moveAfter(Node(key), x)
     
-def insertBefore(x, key):   # x 앞에 key 삽입
+def insertBefore(self, x, key):   # x 앞에 key 삽입
     moveBefore(Node(key), x)
 
-def pushFront(key):         # 맨 앞에 key 추가
+def pushFront(self, key):         # 맨 앞에 key 추가
     insertAfter(self.head, key)
 
-def pushBack(key):          # 맨 뒤에 key 추가
+def pushBack(self, key):          # 맨 뒤에 key 추가
     insertBefore(self.head, key)
 ```
 
