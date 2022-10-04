@@ -132,5 +132,197 @@ def search(self, key):
         v = v.next
 ```
 
+## ✅ C로 구현
+
+### main
+
+```c
+#include <stdio.h>
+#include "LinkedList.h"
+
+int WhoIsPrecede(int* d1, int* d2) {
+    if(*d1 < *d2)
+        return 0;
+    else
+        return 1;
+}
+
+int main(void) {
+    List list;
+    int data;
+    ListInit(&list);
+    
+    SetSortRule(&list, &WhoIsPrecede);
+    
+    LInsert(&list, 11); LInsert(&list, 11);
+    LInsert(&list, 22); LInsert(&list, 22);
+    LInsert(&list, 33);
+    
+    printf("현재 데이터의 수: %d \n", LCount(&list));
+    
+    if(LFirst(&list, &data)) {
+        printf("%d ", data);
+        
+        while(LNext(&list, &data)) {
+            printf("%d ", data);
+        }
+    }
+    printf("\n\n");
+    
+    if(LFirst(&list, &data)) {
+        if(data == 22)
+            LRemove(&list);
+    }
+    while(LNext(&list, &data)) {
+        if(data == 22)
+            LRemove(&list);
+    }
+    printf("현재 데이터의 수: %d \n", LCount(&list));
+    
+    if(LFirst(&list, &data)) {
+        printf("%d ", data);
+        
+        while(LNext(&list, &data))
+            printf("%d ", data);
+    }
+    printf("\n\n");
+    return 0;
+}
+
+```
+
+### LinkedList.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "LinkedList.h"
+
+void ListInit(List* plist) {
+    plist->head = (Node*)malloc(sizeof(Node));
+    plist->head->next = NULL;
+    plist->len = 0;
+    plist->comp = NULL;
+}
+
+void FInsert(List* plist, LData data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    new_node->data = data;
+    new_node->next = plist->head->next;
+    plist->head->next = new_node;
+    plist->len++;
+}
+
+void SInsert(List* plist, LData data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    Node* pred = plist->head;
+    new_node->data = data;
+    
+    while(pred->next != NULL && plist->comp(&data, &pred->next->data) != 0) {
+        pred = pred->next;
+    }
+    new_node->next = pred->next;
+    pred->next = new_node;
+    
+    plist->len++;
+}
+
+void LInsert(List* plist, LData data) {
+    if(plist->comp == NULL) {
+        FInsert(plist, data);
+    } else {
+        SInsert(plist, data);
+    }
+}
+
+int LFirst(List* plist, LData* pdata) {
+    if(plist->head->next == NULL)
+        return FALSE;
+    plist->before = plist->head;
+    plist->cur = plist->head->next;
+    *pdata = plist->cur->data;
+    
+    return TRUE;
+}
+
+int LNext(List* plist, LData* pdata) {
+    if(plist->cur->next == NULL)
+        return FALSE;
+    plist->before = plist->cur;
+    plist->cur = plist->cur->next;
+    *pdata = plist->cur->data;
+    
+    return TRUE;
+}
+
+LData LRemove(List* plist) {
+    Node* rpos = plist->cur;
+    LData rdata = plist->cur->data;
+    
+    plist->before->next = plist->cur->next;
+    plist->cur = plist->before;
+    
+    free(rpos);
+    plist->len--;
+    return rdata;
+}
+
+int LCount(List* plist) {
+    return plist->len;
+}
+
+void SetSortRule(List* plist, int (*comp)(LData* d1, LData* d2)) {
+    plist->comp = comp;
+}
+```
+
+### header
+
+```c
+#ifndef LinkedList_h
+#define LinkedList_h
+
+#define TRUE 1
+#define FALSE 0
+
+#include <stdio.h>
+
+typedef int LData;
+
+typedef struct _node {
+    LData data;
+    struct _node* next;
+} Node;
+
+typedef struct _linkedlist {
+    Node* head;
+    Node* cur;
+    Node* before;
+    int len;
+    int (*comp)(LData* d1, LData* d2);
+} LinkedList;
+
+typedef LinkedList List;
+
+void ListInit(List* plist);
+
+void LInsert(List* plist, LData data);
+
+int LFirst(List* plist, LData* pdata);
+
+int LNext(List* plist, LData* pdata);
+
+LData LRemove(List* plist);
+
+int LCount(List* plist);
+
+void SetSortRule(List* plist, int (*comp)(LData* d1, LData* d2));
+
+#endif /* LinkedList_h */
+```
+
 ## References
-<https://www.youtube.com/watch?v=aCHwXmpuAkY&list=PLsMufJgu5933ZkBCHS7bQTx0bncjwi4PK&index=14>
+- <https://www.youtube.com/watch?v=aCHwXmpuAkY&list=PLsMufJgu5933ZkBCHS7bQTx0bncjwi4PK&index=14>
+- 윤성우의 열혈 자료구조
+
+
