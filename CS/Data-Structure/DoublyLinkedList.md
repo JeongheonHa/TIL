@@ -1,3 +1,5 @@
+# ✅ 양방향 연결 리스트 구현 with Python
+
 ## ✅ 양방향 연결 리스트(Doubly Linked List)
 
 노드들이 양쪽 방향으로 연결된 리스트를 말한다.
@@ -143,5 +145,300 @@ def search(self, key):
     return None
 ```
 
+# ✅ 양방향 연결 리스트 구현 with C (원형 x)
+
+head와 tail의 더미 노드를 갖는 양방향 연결 리스트를 구현한다.
+
+## ✅ main
+
+```c
+#include <stdio.h>
+#include "DLinkedList.h"
+
+int main(void) {
+    List list;
+    int data;
+    ListInit(&list);
+    
+    LInsert(&list, 1); LInsert(&list, 2);
+    LInsert(&list, 3); LInsert(&list, 4);
+    LInsert(&list, 5); LInsert(&list, 6);
+    LInsert(&list, 7); LInsert(&list, 8);
+    
+    if(LFirst(&list, &data)) {
+        printf("%d ", data);
+        while(LNext(&list, &data))
+            printf("%d ", data);
+        while(LPrevious(&list, &data))
+            printf("%d ", data);
+    }
+    printf("\n\n");
+    
+    if(LFirst(&list, &data)) {
+        if(data%2 == 0)
+            LRemove(&list);
+        while(LNext(&list, &data)) {
+            if(data%2 == 0)
+                LRemove(&list);
+        }
+    }
+    
+    if(LFirst(&list, &data)) {
+        printf("%d ", data);
+        while(LNext(&list, &data))
+            printf("%d ", data);
+        while(LPrevious(&list, &data))
+            printf("%d ", data);
+    }
+    printf("\n\n");
+    
+    return 0;
+}
+```
+
+## ✅ DLinkedList.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "DLinkedList.h"
+
+void ListInit(List* plist) {
+    plist->head = (Node*)malloc(sizeof(Node));
+    plist->tail = (Node*)malloc(sizeof(Node));
+    plist->head->next = plist->tail;
+    plist->head->prev = NULL;
+    plist->tail->prev = plist->head;
+    plist->tail->next = NULL;
+    plist->numOfData = 0;
+}
+
+void LInsert(List* plist, LData data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    
+    newNode->prev = plist->tail->prev;
+    plist->tail->prev->next = newNode;
+    
+    newNode->next = plist->tail;
+    plist->tail->prev = newNode;
+    
+    plist->numOfData++;
+}
+
+int LFirst(List* plist, LData* pdata) {
+    if(plist->head->next == plist->tail)
+        return FALSE;
+    plist->cur = plist->head->next;
+    *pdata = plist->cur->data;
+    return TRUE;
+}
+
+int LNext(List* plist, LData* pdata) {
+    if(plist->cur->next == plist->tail)
+        return FALSE;
+    plist->cur = plist->cur->next;
+    *pdata = plist->cur->data;
+    return TRUE;
+}
+
+int LPrevious(List* plist, LData* pdata) {
+    if(plist->cur->prev == plist->head)
+        return FALSE;
+    plist->cur = plist->cur->prev;
+    *pdata = plist->cur->data;
+    return TRUE;
+}
+
+LData LRemove(List* plist) {
+    Node* rpos = plist->cur;
+    LData rdata = plist->cur->data;
+    
+    plist->cur->prev->next = plist->cur->next;
+    plist->cur->next->prev = plist->cur->prev;
+    
+    plist->cur = plist->cur->prev;
+    
+    plist->numOfData--;
+    free(rpos);
+    return rdata;
+}
+
+int LCount(List* plist) {
+    return plist->numOfData;
+}
+```
+
+## ✅ header file
+
+```c
+#ifndef DLinkedList_h
+#define DLinkedList_h
+
+#define TRUE 1
+#define FALSE 0
+
+typedef int LData;
+
+typedef struct _node {
+    LData data;
+    struct _node* next;
+    struct _node* prev;
+} Node;
+
+typedef struct _dlinkedlist {
+    Node* head;
+    Node* tail;
+    Node* cur;
+    int numOfData;
+} DLinkedList;
+
+typedef DLinkedList List;
+
+void ListInit(List* plist);
+
+void LInsert(List* plist, LData data);
+
+int LFirst(List* plist, LData* pdata);
+
+int LNext(List* plist, LData* pdata);
+
+int LPrevious(List* plist, LData* pdata);
+
+LData LRemove(List* plist);
+
+int LCount(List* plist);
+
+#endif /* DLinkedList_h */
+```
+
+# ✅ 더미가 없는 양뱡향 연결 리스트 구현 with C (원형 x)
+
+## ✅ main
+
+```c
+#include <stdio.h>
+#include "NDLinkeList.h"
+
+int main(void) {
+    List list;
+    int data;
+    ListInit(&list);
+    
+    LInsert(&list, 1); LInsert(&list, 2);
+    LInsert(&list, 3); LInsert(&list, 4);
+    LInsert(&list, 5); LInsert(&list, 6);
+    LInsert(&list, 7); LInsert(&list, 8);
+    
+    if(LFirst(&list, &data)) {
+        printf("%d ", data);
+        while(LNext(&list, &data))
+            printf("%d ", data);
+        while(LPrevious(&list, &data))
+            printf("%d ", data);
+    }
+    printf("\n\n");
+    
+    return 0;
+}
+```
+
+## ✅ NDLinkedList.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "NDLinkeList.h"
+
+void ListInit(List* plist) {
+    plist->head = NULL;
+    plist->numOfData = 0;
+}
+
+void LInsert(List* plist, LData data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    
+    newNode->next = plist->head;
+    if(plist->head != NULL)
+        plist->head->prev = newNode;
+    newNode->prev = NULL;
+    plist->head = newNode;
+    plist->numOfData++;
+}
+
+int LFirst(List* plist, LData* pdata) {
+    if(plist->head == NULL)
+        return FALSE;
+    plist->cur = plist->head;
+    *pdata = plist->cur->data;
+    return TRUE;
+}
+
+int LNext(List* plist, LData* pdata) {
+    if(plist->cur->next == NULL)
+        return FALSE;
+    plist->cur = plist->cur->next;
+    *pdata = plist->cur->data;
+    return TRUE;
+}
+
+int LPrevious(List* plist, LData* pdata) {
+    if(plist->cur->prev == NULL)
+        return FALSE;
+    plist->cur = plist->cur->prev;
+    *pdata = plist->cur->data;
+    return TRUE;
+}
+
+int LCount(List* plist) {
+    return plist->numOfData;
+}
+```
+
+## ✅ header file
+
+```c
+#ifndef NDLinkeList_h
+#define NDLinkeList_h
+
+#define TRUE 1
+#define FALSE 0
+
+typedef int LData;
+
+typedef struct _node {
+    LData data;
+    struct _node* next;
+    struct _node* prev;
+} Node;
+
+typedef struct _dlinkedlist {
+    Node* head;
+    Node* cur;
+    int numOfData;
+} DLinkedList;
+
+typedef DLinkedList List;
+
+void ListInit(List* plist);
+
+void LInsert(List* plist, LData data);
+
+int LFirst(List* plist, LData* pdata);
+
+int LNext(List* plist, LData* pdata);
+
+int LPrevious(List* plist, LData* pdata);
+
+int LCount(List* plist);
+
+#endif /* DLinkeList_h */
+```
+
+
 ## References
-https://www.youtube.com/watch?v=zWrFVf9_YTQ&list=PLsMufJgu5933ZkBCHS7bQTx0bncjwi4PK&index=16
+- <https://www.youtube.com/watch?v=zWrFVf9_YTQ&list=PLsMufJgu5933ZkBCHS7bQTx0bncjwi4PK&index=16>
+- 윤성우의 열혈 자료구조
+
+
