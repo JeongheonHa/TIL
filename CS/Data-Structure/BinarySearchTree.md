@@ -6,7 +6,7 @@
 - 왼쪽과 오른쪽 서브 트리도 이진 탐색 트리이다.
 - 왼쪽 자식 노드의 키 < 부모 노드의 키 < 오른쪽 자식 노드의 키 (항상 만족)
 
-<img src = "https://user-images.githubusercontent.com/108064146/195605488-5e73574b-d1ba-49c0-91ad-90e46678c414.PNG">
+<img src = "https://user-images.githubusercontent.com/108064146/195615518-43cfddeb-55d1-4244-b14e-6073d22421b4.PNG">
 <img src = "https://user-images.githubusercontent.com/108064146/195605604-cf817a03-c1bf-4281-986c-ed2afe798970.PNG">
 <img src = "https://user-images.githubusercontent.com/108064146/195605710-c8b7bddb-5f83-4d25-a7aa-196a3b1e735a.PNG">
 </br>
