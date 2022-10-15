@@ -2,7 +2,7 @@
 
 배열 기반의 큐 중에서 원형 큐를 구현한다. </br>
 
-<img src = "https://user-images.githubusercontent.com/108064146/194569915-48867734-b977-4c7f-ac6e-99ccc9cee982.jpeg">
+<img src = "https://user-images.githubusercontent.com/108064146/195986069-e747c19b-1363-43ed-a444-af900d4c1429.PNG">
 </br>
 
 ## ✅ main
@@ -116,7 +116,7 @@ Data peek(Queue* pq) {
 ```
 
 # ✅ ListBaseQueue
-<img src = "https://user-images.githubusercontent.com/108064146/194570180-f994750a-d5ea-4fcd-94ee-4925f853d3b3.jpeg">
+<img src = "https://user-images.githubusercontent.com/108064146/195986123-d941fd1b-6031-4402-818a-3d866c436552.PNG">
 </br>
 
 ## ✅ main
