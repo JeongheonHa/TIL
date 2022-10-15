@@ -1,5 +1,7 @@
 # ✅ 배열 기반 스택
 
+<img src = "https://user-images.githubusercontent.com/108064146/195985853-fa725241-9b75-4a3c-bcbc-19e390b3226b.PNG">
+
 ## ✅ main
 
 ```c
