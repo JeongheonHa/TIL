@@ -1,6 +1,8 @@
 # ✅ Deque
+양방향으로 삽입/삭제가 가능한 큐 자료구조
+</br>
 
-<img src = "https://user-images.githubusercontent.com/108064146/194572291-7e457c3e-808f-481a-a67c-03d554708300.jpeg">
+<img src = "https://user-images.githubusercontent.com/108064146/195986240-ef70967c-b08f-4e84-9b14-82bf0bac72cc.PNG">
 </br>
 
 ## ✅ main
