@@ -61,7 +61,7 @@ log.error("error log={}", name);
 
 ### 3.2 /{경로 변수}, PathVariable("경로 변수")
 {userId}처럼 사용자가 경로 변수를 지정할 수 있도록 템플릿화 한 경우 파라미터에 @PathVariable(경로 변수)를 사용해 매칭되는 부분을 편리하게 조회할 수 있다.
-- 경로 변수와 파라미터의 변수명이 같으면 @PathVariable String uesrId 로 파라미터내의 경로 변수를 생략할 수 있다.
+- 경로 변수와 파라미터의 변수명이 같으면 @PathVariable String userId 로 파라미터내의 경로 변수를 생략할 수 있다.
 ```java
 @GetMapping("/mapping/{userId}")
 public String mappingPath(@PathVariable("userId") String data) {
@@ -191,7 +191,7 @@ public String modelAttributeV1(@ModelAttribute HelloData helloData) {
 ### 5.4 요청 데이터 조회 - HTTP message body
 - HTTP API(rest API)에 주로 사용된다. (`JSON`, XML, TEXT)
 - POST, PUT, PATCH
-- @RequestParam, @ModelAttribute를 사용할 수 있다.
+- @RequestParam, @ModelAttribute를 사용할 수 없다. (요청 파라미터 형식으로 데이터가 넘어오는 것이 아니기 때문에)
 
 ### 5.5 Input/Output Stream
 - InputStream(Reader): HTTP 요청 메시지 바디의 내용을 직접 조회
@@ -220,7 +220,7 @@ public HttpEntity<String> requestBodyStringV3(HttpEntity<String> httpEntity) {
 ```
 
 #### 동작 과정
-요청 메세지가 들어오면 HttpMessageConverter가 HTTP 메세지 바디의 내용을 우리가 원하는 문자나 객체 등으로 변환해준다. (incoding)
+요청 메세지가 들어오면 HttpMessageConverter가 HTTP 메세지 바디의 내용을 우리가 원하는 문자나 객체 등으로 변환해준다. (encoding)
 - 요청, 응답 모두에서 HttpMessageConverter가 사용된다.
 
 #### RequestEntity
