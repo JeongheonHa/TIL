@@ -123,15 +123,15 @@ Stream<T> peek(Consumer<T> action)
 Stream<T> sorted()
 Stream<T> sorted(Comparator<? super T> comparator) 
 //스트림의 요소를 변환
-Stream<R> map(Function<? super T, ? extends R> mapper) // 하나의 스트림에 여러 번 사용 가능
+Stream<R>    map(Function<? super T, ? extends R> mapper) // 하나의 스트림에 여러 번 사용 가능
 DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper)
-IntStream mapToInt(ToIntFunction<? super T> mapper)
-LongStream mapToLong(ToLongFunction<? super T> mapper)
+IntStream    mapToInt(ToIntFunction<? super T> mapper)
+LongStream   mapToLong(ToLongFunction<? super T> mapper)
 
-Stream<R> flatMap(Function<T, Stream<R>> mapper)
+Stream<R>    flatMap(Function<T, Stream<R>> mapper)
 DoubleStream flatMapToDouble(Function<T, DoubleStream> m)
-IntStream flatMapToInt(Function<T, IntStream> m)
-LongStream flatMapToLong(Function<T, LongStream> m)
+IntStream    flatMapToInt(Function<T, IntStream> m)
+LongStream   flatMapToLong(Function<T, LongStream> m)
 ```
 
 #### a. sorted(Comparator<? super T> comparator)
@@ -185,13 +185,24 @@ mapToInt(Integer::parseInt)
 mapToInt(Integer::intValue)
 ```
 
-#### 기본형 스트림이 제공하는 메서드
-최종 연산 메서드이므로 1번 밖에 사용하지 못한다.
+#### 기본형 스트림이 제공하는 최종 연산 메서드
+
 ```java
-int            sum()        //스트림의 모든 요소의 총합
-OptionalDouble average()    //스트림의 모든 요소의 평균
-OptionalInt    max()        //스트림의 요소 중 가장 큰 값
-OptionalInt    min()        //스트림의 요소 중 가장 작은 값
+//IntStream의 경우
+int count() //요소들의 개수를 반환
+int sum()   //모든 요소들의 합을 반환
+OptionalInt max() //최댓값을 OptionalInt 객체로 반환
+OptionalInt min() //최솟값을 OptionalInt 객체로 반환
+OptionalDouble average() //모든 요소들의 평균값을 OptionalDouble 객체로 반환
+
+int reduce(int identity, IntBinaryOperator op) //스트림의 요소들에 대해 제공된 이진 연산자(op)를 순차적으로 적용하여 OptionalInt를 반환합니다.
+OptionalInt reduce(IntBinaryOperator op)       //스트림의 요소들에 대해 제공된 항등값(identity)과 이진 연산자(op)를 순차적으로 적용하여 최종 결과값을 반환
+ 
+boolean anyMatch()      //요소들 중 하나 이상이 주어진 조건을 만족하는지 여부를 반환
+boolean allMatch()      //모든 요소가 주어진 조건을 만족하는지 여부를 반환
+boolean noneMatch()     //요소들이 모두 주어진 조건을 만족하지 않는지 여부를 반환
+OptionalInt findFirst() //첫 번째 요소를 OptionalInt 객체로 반환
+OptionalInt findAny()   //임의의 요소를 OptionalInt 객체로 반환
 ```
 
 #### summaryStatistics()
@@ -201,9 +212,9 @@ OptionalInt    min()        //스트림의 요소 중 가장 작은 값
 IntSummaryStatistics stat = scoreStream.summaryStatistics();
 long totalCount = stat.getCount();
 long totalScore = stat.getSum();
-double avgScore = stat.getAverage();
 int    minScore = stat.getMin();
 int    maxScore = stat.getMax();
+double avgScore = stat.getAverage();
 ```
 
 #### 반대로 기본형 스트림 -> 객체 스트림
@@ -235,9 +246,9 @@ Stream<String> strStream = lineStream.flatMap(line -> Stream.of(line.split(" +")
 ```
 
 ### 3.2 Optional<T> 와 OptionalInt
-`Optional<T>`는 T타입의 객체를 감싸는 래퍼 클래스이다.
-- 최종 연산의 결과를 Optional객체에 담아서 반환하면 담겨 있는 객체가 null이더라도 NullPointerException을 발생시키지 않는다.
-
+- `Optional<T>`는 T타입의 객체를 감싸는 래퍼 클래스이다.
+    + 최종 연산의 결과를 Optional객체에 담아서 반환하면 담겨 있는 객체가 null이더라도 NullPointerException을 발생시키지 않는다.
+- `OptionalInt`: 객체가 아닌 기본형 값을 갖는 Optional객체
 #### a. Optional객체 생성
 인자로 받아온 객체를 Optional객체에 담는다.
 
@@ -275,47 +286,30 @@ int result = Optional.of("123")
                     .map(Integer::parseInt).orElse(-1);
 ```
 
+- `isPresent()`: Optional객체의 값이 null이면 false, 아니면 true를 반환
+
 ```java
-//isPresent(): Optional객체의 값이 null이면 false, 아니면 true를 반환
 if (Optional.ofNullable(str).isPresent()) {
     System.out.println(str);
 }
-//isPresent(Consumer<T> block): 값이 있으면 주어진 람다식을 실행, 없으면 아무일도 하지 않는다.
+```
+- `isPresent(Consumer<T> block)`: 값이 있으면 주어진 람다식을 실행, 없으면 아무일도 하지 않는다.
+```java
 Optional.ofNullable(str).ifPresent(System.out::println);
 ```
 
-#### d. Optional의 최종 연산
-```java
-Optional<T> findAny()
-Optional<T> findFirst()
-Optional<T> max(Comparator<? super T> comparator)
-Optional<T> min(Comparator<? super T> comparator)
-Optional<T> reduce(BinaryOperator<T> accumulator)
-```
-
-#### e. OptionalInt, OptionalLong, OptionalDouble 
-- `OptionalInt`: 객체가 아닌 기본형 값을 갖는 Optional객체
-- 나머지 `OptionalLong`, `OptionalDouble` 모두 똑같다.
-```java
-//IntStream에 정의된 메서드 - OptionalInt로 반환
-OptionalInt    findAny()
-OptionalInt    findFirst()
-OptionalInt    reduce(IntBinaryOperator op)
-OptionalInt    max()
-OptionalInt    min()
-OptionalDouble average()
-```
+- OptionalInt에 저장된 값 꺼내기
 
 ```java
-//OptionalInt에 저장된 값 꺼내기
 Optional<T>    T get()
 OptionalInt    int getAsInt()
 OptionalLong   Long getAsLong()
 OptionalDouble Double getAsDouble()
 ```
 
+- OptionalInt에서 0과 empty의 차이
+
 ```java
-//OptionalInt에서 0과 empty의 차이
 OptionalInt opt = OptionalInt.of(0);
 OptionalInt opt = OptionalIint.empty();
 
@@ -339,7 +333,6 @@ void forEachOrdered(Consumer<? super T> action)
 
 //스트림의 요소의 개수 반환
 long count()
-
 //스트림의 최대값/최소값을 반환
 Optional<T> max(Comparator<? super T> comparator)
 Optional<T> min(Comparator<? super T> comparator)
@@ -360,12 +353,263 @@ A[]      toArray(IntFunction<A[]> generator)
 //스트림의 요소를 하나씩 줄여가면서 계산
 Optional<T> reduce(BinaryOperator<T> accumlator)
 T reduce(T identity, BinaryOperator<T> accumulator)
-U reduce(U identity, BiFunction<U,T,U> accumulator, BinaryOperator<U> combiner)
+U reduce(U identity, BiFunction<U,T,U> accumulator, BinaryOperator<U> combiner) 
 
 //스트림의 요소를 수집
 R collect(Collector<T,A,R> collector)
 R collect(Supplier<R> supplier, BiConsumer<R,T> accumulator, BiConsumer<R,R> combiner)
 ```
 
+#### a. reduce()
+스트림의 요소를 줄여나가면서 연산을 수행하고 최종결과를 반환
+- 초기 값이 있는 경우
+    + 초기 값(identity)과 스트림의 첫 번째 요소로 연산
+    + 스트림의 요소가 하나도 없으면 초기값 반환
+
+- count, sum, max, min, average와 같이 통계와 관련된 메서드는 최종 연산 메서드를 사용하는 것보다 기본형 스트림으로 변환하거나, reduce()나 collect()를 사용해서 얻는 것이 데이터를 더 유연하게 다룰 수 있다.
+- 하지만, 최종 연산을 사용하는 것이 더 직관적이다.
+
+```java
+Optional<T> reduce(BinaryOperator<T> accumlator)
+T reduce(T identity, BinaryOperator<T> accumulator)
+U reduce(U identity, BiFunction<U,T,U> accumulator, BinaryOperator<U> combiner) 
+
+//예시
+int count = intStream.reduce(0, (a,b) -> a + 1);
+int sum   = intStream.reduce(0, (a,b) -> a + b);
+int max   = intStream.reduce(Integer.MIN_VALUE, (a,b) -> a>b ? a:b);
+int min   = intStream.reduce(Integer.MAX_VALUE, (a,b) -> a<b ? a:b);
+
+//max와 min는 초기값이 필요없기 때문에 Optional<T>를 반환하는 매개변수 하나짜리 reduce()를 사용하는 것이 낫다.
+//단, 해당 스트림의 타입이 IntStream인 경우 OptionalInt를 사용해야한다.
+OptionalInt max = intStream.reduce((a,b) -> a>b ? a:b);
+OptionalInt min = intStream.reduce((a,b) -> a<b ? a:b);
+
+//Integer클래스의 static 메서드인 max, min 사용
+OptionalInt max = intStream.reduce(Integer::max);
+OptionalInt min = intStream.reduce(Integer::min);
+```
+
+
+#### b. collect()
+스트림의 요소를 수집하는 최종 연산
+
+```java
+collect()  // 스트림의 최종 연산 메서드, 매개변수로 컬랙터 필요
+Collector  // 어떻게 수집할 것인지에 대한 방법이 정의되어 있는 인터페이스
+Collectors // static 메서드로 미리 작성된 컬렉터를 제공하는 클래스 
+
+//스트림의 요소를 수집
+R collect(Collector<T,A,R> collector) 
+R collect(Supplier<R> supplier, BiConsumer<R,T> accumulator, BiConsumer<R,R> combiner)
+```
+
+#### 스트림을 컬렉션과 배열로 변환
+- `toList()`, `toSet()`, `toMap()`, `toCollection()`, `toArray()`
+
+```java
+//toList() [toSet()도 똑같음.]
+List<String> names = stuStream.map(Student::getName).collect(Collectors.toList());
+//toCollection(특정 컬렉션를 지정)
+ArrayList<String> list = names.stream().collect(Collectors.toCollection(ArrayList::new));
+//toMap(key, value)
+Map<String, Person> map = personStream.collect(Collectors.toMap(p->p.getId(), p->p));
+//toArray(담을 배열) [매개변수를 지정하지 않으면 Object[]로 반환됨]
+Student[] stuNames = studentStream.toArray(Student[]::new);
+```
+
+#### 통계 정보 얻기
+- `counting()`, `summingInt()`, `averagingInt()`, `maxBy()`, `minBy()`
+- 보통 최종 연산을 이용하기 보다는 `intStream`이나 `reduce()`를 통해 통계 정보를 얻는다.
+- 하지만, `groupingBy()`를 사용할 때 유용하다.
+
+```java
+long count = stuStream.count();
+long count = stuStream.collect(counting());
+
+long totalScore = stuStream.mapToInt(Student::getScore).sum();
+long totalScore = stuStream.collect(summingInt(Student::getScore));
+
+OptionalInt topScore = stuStream.maptoInt(Student::getScore).max();
+Optional<Student> topScore = stuStream.max(Comparator.comparingInt(Student::getScore));
+Optional<Student> topScore = stuStream.collect(maxBy(Comparator.comparingInt(Student::getScore)));
+
+IntSummaryStatistics stat = stuStream.mapToInt(Student::getScore).summaryStatistics();
+IntSummaryStatistics stat = stuStream.collect(summarizingInt(Student::getScore));
+```
+
+#### reducing()
+- IntStream에는 매개변수 3개 짜리 collect만 정의되어 있으므로 boxed()를 통해 Stream<Integer>로 변환해야 매개변수 1개 짜리를 사용할 수 있다.
+```java
+Collector reducing(BinaryOperator<T> op)
+Collector reducing(T identity, BinaryOperator<T> op)
+Collector reducing(U identity, Function<T,U> mapper, BinaryOperator<U> op)
+
+//예시
+IntStream intStream = new Random().ints(1, 46).distinct(),limit(6);
+
+OptionalInt max = intStream.reduce(Integer::max);
+OptionalInt max = intStream.boxed().collect(reducing(Integer::max));
+
+long sum = intStream.reduce(0, (a,b) -> a + b);
+long sum = intStream.boxed().collect(reducing(0, (a,b) -> a + b));
+
+int grandTotal = stuStream.map(Student::getScore).reduce(0, Integer::sum);
+int grandTotal = stuStream.collect(reducing(0, Student::getScore, Integer::sum));
+```
+
+#### joining()
+문자열 스트림의 모든 요소를 하나의 문자열로 연결해서 반환 (구분자, 접두사, 접미사 지정 가능)
+
+```java
+String studentNames = stuStream.map(Student::getName).collect(joining());
+String studentNames = stuStream.map(Student::getName).collect(joining(","));
+String studentNames = stuStream.map(Stduent::getName).collect(joining(",", "[", "]"))
+```
+
+#### 그룹화 & 분할
+- `groupingBy`(그룹화): 스트림의 요소를 특정 기준으로 그룹화하는 것의 의미
+- `partitioningBy`(분할): 스트림의 요소를 두 가지, 지정된 조건에 일치하는 그룹과 일치하지 않는 그룹으로의 분할을 의미
+- 스트림을 두 개의 그룹으로 나눌 경우 pratitioningBy()를 사용하고 나머지는 groupingBy()를 사용
+- 그룹화와 분할은 `Map`에 담겨 반환된다.
+
+```java
+Collector groupingBy(Function classifier)
+Collector groupingBy(Function classifier, Collector downstream)
+Collector groupingBy(Function classifier, Supplier mapFactory, Collector downstream)
+
+Collector partitioningBy(Predicate predicate)
+Collector partitioningBy(Predicate predicate, Collector downstream)
+```
+
+#### partitioningBy()
+
+```java
+//예시
+//1. 기본 분할
+Map<Boolean, List<Student>> stuBySex = stuStream.collect(partitioningBy(Student::isMale));
+List<Student> male = stuBySex.get(true);    // 남학생 목록
+List<Student> female = stuBySex.get(false); // 여학생 목록
+
+//2. 기본 분할 + 통계 정보
+Map<Boolean, Long> stuNumBySex = stuStream.collect(partitioningBy(Student::isMale, counting()));
+System.out.println(stuNumBySex.get(true));  // 남학생: 8
+System.out.println(stuNumBySex.get(false)); // 여학생: 10
+
+Map<Boolean, Optional<Student>> topScoreBySex = stuStream.collect(partitioningBy(Student::isMale, maxBy(comparingInt(Student::getScore))));
+System.out.println(topScoreBySex.get(true));  // 남학생 1등: Optional[김철수, 남, 1, 1, 300]
+System.out.println(topScoreBySex.get(false)); // 여학생 1등: Optional[김영희, 여, 1, 1, 250]
+
+//3. Optional<Student>가 아닌 Student객체로 반환
+Map<Boolean, Optional<Student>> toScoreBySex = stuStream.collect(
+    partitioningBy(Student::isMale, 
+    collectingAndThen(maxBy(comparingInt(Student::getScore)), Optional::get)
+        )
+    );
+System.out.println(topScoreBySex.get(true));
+System.out.println(topScoreBySex.get(false));
+
+//4. 이중 분할
+Map<Boolean, Map<Boolean, List<Student>>> failedStuBySex = stuStream.collect(
+    partitioningBy(Student::isMale,
+    partitioningBy(s -> s.getScore() < 150)
+        )
+    );
+List<Student> failedMaleStu = failedStuBySex.get(true).get(true);    // 남학생 중 성적이 150점 미만인 리스트
+List<Student> failedFemaleStu = failedStuBySex.get(false).get(true); // 여학생 중 성적이 150점 미만인 리스트
+```
+
+#### groupingBy()
+그룹화를 하면 기본적으로 `List<T>`에 담아 반환한다.
+```java
+//예시
+//1. 기본 그룹화
+Map<Integer, List<Student>> stuByBan = stuStream.collect(groupingBy(Student::getBan)); // toList()가 생략된 상태
+Map<Integer, List<Student>> stuByBan = stuStream.collect(groupingBy(Student::getBan, toList()));
+//2. 다른 컬렉션에 담아서 반환
+Map<Integer, HashSet<Student>> stuByBan = stuStream.collect(groupingBy(Student::getBan, toCollection(HashSet::new)));
+
+//3. 그룹화 + 통계 정보
+Map<Student.Level, Long> stuByLevel = stuStream
+    .collect(groupingBy(s -> {
+            if (s.getScore() >= 200)      return Student.Level.HIGH;
+            else if (s.getScore() >= 100) return Student.Level.MID;
+            else                          return Student.Level.LOW;
+        }, counting())
+    ); // [MID] - 8명, [HIGH] - 8명, [LOW] - 2명
+
+//4. 다수준 그룹화
+Map<Integer, Map<Integer, List<Student>>> stuByHakAndBan = stuStream
+        .collect(groupingBy(Student::getHak,
+                groupingBy(Student::getBan)
+        )); // 학년 별로 그룹화 후 반 별로 그룹화
+
+//5. collectingAndThen을 이용해 각 반의 1등 구하기
+Map<Integer, Map<Integer, List<Student>>> topStuByHakAndBan = stuStream
+        .collect(groupingBy(Student::getHak,
+                groupingBy(Student::getBan,
+                        collectingAndThen(
+                            maxBy(comparingInt(Student::getScore)),
+                            Optional::get
+                        )
+                )
+        ));
+
+//6. 그룹화한 후 mapping을 이용해서 원하는 컬렉션에 저장
+Map<Integer, Map<Integer, Set<Student.Level>>> stuByHakAndBan = stuStream
+    .collect(
+        groupingBy(Student::getHak,
+        groupingBy(Student::getBan,
+            mapping(s -> {
+                if (s.getScore() >= 200)      return Student.Level.HIGH;
+                else if (s.getScore() >= 100) return Student.Level.MID;
+                else                          return Student.Level.LOW;
+                }, toSet())
+            )
+        )
+    );
+```
+
+#### Collector 구현하기
+```java
+//Collector 인터페이스
+public interface Collector<T, A, R> {
+    Supplier<A>       supplier();    // 수집 결과를 저장할 공간 제공
+    BiConsummer<A, T> accumulator(); // 스트림의 요소를 supplier에 의해 제공된 공간에 누적하는 방법 제공
+    BinaryOperator<A> combiner();    // 병렬 스트림의 경우, 여러 쓰레드에 의해 처리된 결과를 합칠 방법 제공
+    Function<A, R>    finisher();    // 결과를 최종적으로 변환할 방법 제공
+    Set<Characteristics> characteristics(); // 컬렉션의 특성이 담긴 Set을 반환
+
+    //...
+}
+
+//finisher()의 경우 변환이 필요없다면, 항등 함수를 반환한다.
+public Function finisher() {
+    return Function.identity(); // 항등 함수 (return x -> x;)
+}
+```
+- `Set<Characteristics> characteristics()`: 컬렉터가 수행하는 작업의 속성 정보를 Set에 담아 제공
+
+```java
+//속성 정보
+Characteristics.CONCURRENT      // 병렬로 처리할 수 있는 작업
+Characteristics.UNORDERED       // 스트림의 요소의 순서가 유지될 필요가 없는 작업
+Characteristics.IDENTITY_FINISH // finisher()가 항등 함수인 작업
+```
+
+```java
+//예시
+public Set<Characteristics> characteristics() {
+    return Collections.unmodifiableSet(EnumSet.of(
+                Collector.Characteristics.CONCURRENT,
+                Collector.Characteristics.UNORDERED
+            ));
+}
+
+//아무런 속성도 저장하고 싶지 않은 경우 비어있는 Set을 반환
+Set<Characteristics> characteristics() {
+    return Collections.emptySet();
+}
+```
 ## Reference
 > 자바의 정석 - 남궁성
