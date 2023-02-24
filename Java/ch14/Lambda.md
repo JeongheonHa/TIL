@@ -8,14 +8,14 @@
     + 함수는 클래스에 독립적, 메서드는 클래스에 종속적
 
 ### 1.1 람다식 작성하기
-1. 메서드의 이름과 반환타입을 제거하고 `'->'`를 블력{}앞에 추가한다.
+1. 메서드의 이름과 반환타입을 제거하고 `'->'`를 블럭`{}`앞에 추가한다.
 2. 반환 값이 있는 경우, 식이나 값만 적고 return문 생략 가능 (끝에 ; 안붙임)
 3. 매개변수의 타입이 추론 가능하면 생략가능(대부분의 경우 생략가능)
 
 ### 1.2 주의사항
-1. 매개변수가 하나인 경우, 괄호() 생략가능(타입이 없을 때만)
-2. 블록 안의 문장이 하나뿐 일 때, 괄호{} 생략가능(끝에 ; 안붙임) </br> 
-단, 하나뿐인 문장이 return문이면 괄호{} 생략불가
+1. 매개변수가 하나인 경우, 괄호(`()`) 생략가능(타입이 없을 때만)
+2. 블록 안의 문장이 하나뿐 일 때, 괄호(`{}`) 생략가능(끝에 `;` 안붙임) </br> 
+단, 하나뿐인 문장이 return문이면 괄호(`{}`) 생략불가
 
 
 ## 2. 함수형 인터페이스
@@ -136,10 +136,10 @@ Outer.this.val : 10
 | 함수형 이터페이스 | 메서드 | 설명 |
 |---|---|---|
 | java.lang.Runnable | void run() | 매개변수 x, 반환값 x |
-| Supplier<T> | T get() | 매개변수 x, 반환값 o |
-| Consumer<T> | void accept(T t) | 매개변수 o, 반환값 x |
-| Function<T,R> | R apply(T t) | 일반적인 함수, 매개변수 o, 반환값 o |
-| Predicate<T> | boolean test(T t) | 조건식을 표현하는데 사용 </br> 매개변수 o, 반환 값 o (boolean) |
+| Supplier`<T>` | T get() | 매개변수 x, 반환값 o |
+| Consumer`<T>` | void accept(T t) | 매개변수 o, 반환값 x |
+| Function`<T,R>` | R apply(T t) | 일반적인 함수, 매개변수 o, 반환값 o |
+| Predicate`<T>` | boolean test(T t) | 조건식을 표현하는데 사용 </br> 매개변수 o, 반환 값 o (boolean) |
 > Predicate는 Function의 변형으로 반환타입이 boolean이라는 것만 다르다. (조건식을 람다식으로 표현하는데 사용)
 
 ### 3.1 매개변수가 두 개인 함수형 인터페이스
@@ -158,20 +158,20 @@ Outer.this.val : 10
 
 | 함수형 인터페이스 | 메서드 |
 |---|---|
-| UnaryOperator<T> | T apply(T t) |
-| BinaryOperator<T>| T apply(T t, T t) |
+| UnaryOperator`<T>` | T apply(T t) |
+| BinaryOperator`<T>`| T apply(T t, T t) |
 
 ### 3.3 컬렉션 프레임웍과 함수형 인터페이스
 - 컬렉션 프레임웍의 인터페이스에 함수형 인터페이스를 사용하는 디폴트 메서드 추가
 
 | 인터페이스 | 메서드 | 설명 |
 |---|---|---|
-| Collection | boolean removeIf(Predicate<E> filter) | 조건에 맞는 요소를 삭제 |
-| List | void replaceAll(UnaryOperator<E> operator) | 모든 요소를 변환하여 대체 |
-| Iterable | void forEach(Consumer<T> action) | 모든 요소에 작업 action을 수행 |
+| Collection | boolean removeIf(Predicate`<E>` filter) | 조건에 맞는 요소를 삭제 |
+| List | void replaceAll(UnaryOperator`<E>` operator) | 모든 요소를 변환하여 대체 |
+| Iterable | void forEach(Consumer`<T>` action) | 모든 요소에 작업 action을 수행 |
 | Map | V compute(K key, BiFunction<K,V,V> f) | 지정된 키의 값에 작업 f를 수행 |
 | | V computeIfAbsent(K key, Function<K,V> f) | 키가 없으면 작업 f 수행 후 추가 |
-| | V computeIfPresent(K key, BiFunction<V,V,V> f) | 지정된 키가 있을 때 작업 f 수행 |
+| | V computeIfPresent(K key, BiFunction<K,V,V> f) | 지정된 키가 있을 때 작업 f 수행 |
 | | V merge(K key, V value, BiFunction<V,V,V> f) | 모든 요소에 병합작업 f를 수행 | 
 | | void forEach(BiConsumer<K,V> action) | 모든 요소에 작업 action을 수행 |
 | | void replaceAll(BiFunction<K,V,V> f) | 모든 요소에 치환작업 f를 수행 |
