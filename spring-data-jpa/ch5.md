@@ -201,10 +201,10 @@ public Page<MemberDto> list(Pageable pageable) {
 }
 ```
 
-- 요청: `/members?page=0&size=3&sort=id,desc&sort=username,desc`
-- page: 현재 페이지 (기본 0부터 시작)
-- size: 한 페이지에 노출할 데이터 건수
-- sort: 정렬 조건 정의
+- `요청`: /members?page=0&size=3&sort=id,desc&sort=username,desc
+- `page`: 현재 페이지 (기본 0부터 시작)
+- `size`: 한 페이지에 노출할 데이터 건수
+- `sort`: 정렬 조건 정의
 
 ### 4.1 기본값 
 
@@ -240,6 +240,7 @@ public String list(
 페이지를 1부터 시작하고 싶으면 `PageableHandlerMethodArgumentResolver`를 스프링 빈으로 직접 등록하고 `setOneIndexdParameters`를 true로 설정하면 된다.
 
 - `spring.data.web.pageable.one-indexed-parameters` 를 true 로 설정할 경우 web에서 page파라미터를 -1처리 할 뿐이다. 따라서 응답값인 Page에 모두 0페이지 인덱스를 사용하는 한계가 있다.
+
 
 ## Reference
 > 실전! 스프링 데이터 JPA [김영한]
