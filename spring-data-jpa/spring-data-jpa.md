@@ -368,5 +368,72 @@ int bulkAgePlus(@Param("age") int age);
     + 해결 1: 영속성 컨텍스트에 엔티티가 있다면 벌크성 쿼리를 날린 직 후에 바로 영속성 컨텍스트를 초기화
     + 해결 2: 영속성 컨텍스트에 엔티티가 없는 상태에서 벌크성 쿼리 실행
 
+## 8. 엔티티 그래프
+연관된 엔티티들을 SQL 한번에 조회하는 방법
+- 페치 조인의 간편 버전
+- LEFT OUTER JOIN 사용
+
+### 8.1 사용 방법
+
+```java
+//공통 메서드 오버라이드
+@Override
+@EntityGraph(attributePaths = {"team"}) 
+List<Member> findAll();
+
+//JPQL + 엔티티 그래프
+@EntityGraph(attributePaths = {"team"}) 
+@Query("select m from Member m") 
+List<Member> findMemberEntityGraph();
+
+//메서드 이름으로 쿼리에서 특히 편리하다.
+@EntityGraph(attributePaths = {"team"}) 
+List<Member> findByUsername(String username)
+```
+
+## 9. JPA Hint & Lock
+
+### 9.1 JPA Hint
+JPA 쿼리 힌트 (SQL 힌트가 아닌 JPA 구현체에게 제공하는 힌트)
+- `org.springframework.data.jpa.repository.QueryHints` 애노테이션 사용
+- 하이버네이트는 제공하지만 JPA는 제공하지 않는 기능들을 사용하고자 할 때 힌트를 제공해서 사용하도록 할 수 있다.
+- 주로 데이터를 읽기만 할 때 스냅샷을 생성하지 않고 변경 감지를 생략하고자 할 때 사용한다.
+
+```java
+@QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
+Member findReadOnlyByUsername(String username);
+```
+
+```java
+@Test
+public void queryHint() throws Exception {
+    //given
+    memberRepository.save(new Member("member1", 10));
+
+    em.flush();
+    em.clear();
+
+    //when
+    Member member = memberRepository.findReadOnlyByUsername("member1");
+
+    member.setUsername("member2");
+
+    em.flush(); //Update Query 실행X 
+}
+```
+
+- `사용시 주의 사항` : 성능에 문제가 있는 경우는 보통 복잡한 조회 쿼리를 잘못짜서 발생하는 경우가 많기 때문에 조회 쿼리를 잘 짰는데도 성능 최적화가 필요한 경우 사용하도록 하자.
+
+### 9.2 Lock
+쿼리에 락을 걸고 싶을 때 사용한다. (ex. select ... for update)
+- `org.springframework.data.jpa.repository.Lock` 애노테이션 사용
+- 참고로 실시간 트래픽이 많은 경우 Lock을 걸면 안된다.
+
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+List<Member> findByUsername(String name);
+```
+
+
 ## Reference
 > 실전! 스프링 데이터 JPA [김영한]
